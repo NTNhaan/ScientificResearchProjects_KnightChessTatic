@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: f96ac31a518388c43bf50233a189cac8
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - idelAnimation: {fileID: 7400000, guid: dccbee202bdb44e42803ef08d6ae8a16, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
