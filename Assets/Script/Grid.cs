@@ -416,7 +416,7 @@ public class Grid : MonoBehaviour
                     if (match == null) continue;
                     foreach (var gamePiece in match)
                     {
-                        if (gamePiece.ItemComponent.Item == ItemPieces.ItemType.Sword)
+                        if (gamePiece.ItemComponent.Item == ItemPieces.ItemType.Sword && timeswap.role == TimeBar.Role.Player)
                         {
                             animator.SetTrigger("Attack3");
                         }
