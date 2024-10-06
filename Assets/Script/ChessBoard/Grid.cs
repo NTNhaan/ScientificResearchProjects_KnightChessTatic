@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 public class Grid : MonoBehaviour
 {
+    // public EnemyCharacter enemy;
+    // public HeroCharater player;
+    private GameManager gameManager;
     public enum PieceType
     {
         NORMAL,
@@ -27,8 +30,6 @@ public class Grid : MonoBehaviour
     public int xDim;
     public int yDim;
     public float FillTime;
-
-
     public PiecePrefab[] piecePrefabs;   // the array containing the image object is displayed on chessboard
     public GameObject backgroundPrefab;   // backgound for chessboard
     public PiecePosition[] initialPieces;
@@ -47,7 +48,6 @@ public class Grid : MonoBehaviour
     [SerializeField] private TimeBar timeswap;
 
     public PieceReward pieceReward;
-    public Animator animator;
     public bool isFilling = false;
     public void SetFilling(bool value)
     {
@@ -57,6 +57,7 @@ public class Grid : MonoBehaviour
     {
         role = TimeBar.Role.Player;
         timeswap = FindObjectOfType<TimeBar>();
+        gameManager = GetComponent<GameManager>();
     }
     public void Start()
     {
@@ -166,8 +167,6 @@ public class Grid : MonoBehaviour
         }
         return movedPiece;
     }
-
-
     public GamePieces SpawnNewPiece(int x, int y, PieceType type)
     {
         GameObject newPiece = (GameObject)Instantiate(_piecePrefabDict[type], GetWorldPosition(x, y, 0), Quaternion.identity);
@@ -416,9 +415,9 @@ public class Grid : MonoBehaviour
                     if (match == null) continue;
                     foreach (var gamePiece in match)
                     {
-                        if (gamePiece.ItemComponent.Item == ItemPieces.ItemType.Sword && timeswap.role == TimeBar.Role.Player)
+                        if (timeswap.role == TimeBar.Role.Player)
                         {
-                            animator.SetTrigger("Attack3");
+                            gameManager.HandleItemBehaviour(gamePiece);
                         }
                         BoxCollider2D boxCollider = gamePiece.GetComponent<BoxCollider2D>();
                         if (boxCollider != null)
@@ -497,4 +496,3 @@ public class Grid : MonoBehaviour
         }
     }
 }
-

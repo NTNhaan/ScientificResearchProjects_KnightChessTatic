@@ -22,6 +22,7 @@ public class SlashEffect : MonoBehaviour
         float elapsed = 0f;
         Vector3 startPos = vfx.transform.position;
         Vector3 endPos = targetPos.position;
+        endPos.y = startPos.y;
         while (elapsed < duration)
         {
             vfx.transform.position = Vector3.Lerp(startPos, endPos, elapsed / duration);

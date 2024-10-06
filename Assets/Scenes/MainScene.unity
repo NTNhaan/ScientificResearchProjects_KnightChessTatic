@@ -21058,6 +21058,7 @@ GameObject:
   - component: {fileID: 330669421}
   - component: {fileID: 330669423}
   - component: {fileID: 330669424}
+  - component: {fileID: 330669426}
   m_Layer: 0
   m_Name: HeroImage
   m_TagString: Untagged
@@ -21165,8 +21166,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da40919be839a4345bd138f46818ebc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slashEffect: {fileID: 5983462101813151186, guid: 103c8953584cd0b4c875751dd7e04adf, type: 3}
+  slashEffect: {fileID: -2253911629886400664, guid: 8514627150f232d4ca5393e63f526322, type: 3}
   targetPos: {fileID: 807103514}
+--- !u!114 &330669426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330669420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfee3fca921032b4197e329e41cec767, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  attack: 5
 --- !u!224 &337180786 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3863677987191946079, guid: 9a0ebcb3db200fe44bd9b4f3756e1c66, type: 3}
@@ -46930,6 +46945,7 @@ GameObject:
   - component: {fileID: 807103514}
   - component: {fileID: 807103513}
   - component: {fileID: 807103517}
+  - component: {fileID: 807103519}
   m_Layer: 0
   m_Name: DemonImage
   m_TagString: Untagged
@@ -47025,6 +47041,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &807103519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 807103512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecd7e44ad8f637640ac1b871edf9c8a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  attack: 5
 --- !u!1 &829444665
 GameObject:
   m_ObjectHideFlags: 0
@@ -47478,10 +47508,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1192998002}
   - component: {fileID: 1192997997}
-  - component: {fileID: 1192997996}
   - component: {fileID: 1192997999}
   - component: {fileID: 1192998001}
+  - component: {fileID: 1192997996}
   - component: {fileID: 1192998004}
+  - component: {fileID: 1192998005}
   m_Layer: 0
   m_Name: ChessBoard
   m_TagString: Untagged
@@ -47515,7 +47546,6 @@ MonoBehaviour:
   initialPieces: []
   timeswap: {fileID: 0}
   pieceReward: {fileID: 1604598633}
-  animator: {fileID: 330669423}
   isFilling: 0
 --- !u!212 &1192997997
 SpriteRenderer:
@@ -47640,6 +47670,20 @@ MonoBehaviour:
   MaxTime: 100
   role: 0
   animator: {fileID: 1407492779}
+--- !u!114 &1192998005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1192997995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16bbacd3f56c26a41b60d04d697c79e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemy: {fileID: 807103519}
+  player: {fileID: 330669426}
 --- !u!1 &1225472067
 GameObject:
   m_ObjectHideFlags: 0
