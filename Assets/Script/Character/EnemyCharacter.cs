@@ -4,9 +4,16 @@ using UnityEngine;
 
 public class EnemyCharacter : Character
 {
+    private Animator animator;
     public override void Attack(Character target)
     {
-        target.TakeHit(attack);
+        var atm = target.GetComponent<Character>();
+        animator = GetComponent<Animator>();
+        if (atm != null)
+        {
+            atm.TakeHit(attack);
+            animator.SetTrigger("Attack1");
+        }
     }
 
     public override void Dead()

@@ -7,13 +7,26 @@ public class GameManager : MonoBehaviour
     private Dictionary<ItemPieces.ItemType, System.Action<GamePieces>> itemBehaviors;
     public EnemyCharacter enemy;
     public HeroCharater player;
+    [SerializeField] private TimeBar timeswap;
 
-
+    void Awake()
+    {
+        timeswap = FindObjectOfType<TimeBar>();
+    }
     void Start()
     {
         itemBehaviors = new Dictionary<ItemPieces.ItemType, System.Action<GamePieces>>
         {
-            {ItemPieces.ItemType.Sword, (GamePieces piece) => { player.Attack(enemy); } },
+            {ItemPieces.ItemType.Sword, (GamePieces piece) => {
+                if(timeswap.role == TimeBar.Role.Player)
+                {
+                    player.Attack(enemy);
+                }
+                else
+                {
+                    enemy.Attack(player);
+                }
+            } },
 
         };
     }

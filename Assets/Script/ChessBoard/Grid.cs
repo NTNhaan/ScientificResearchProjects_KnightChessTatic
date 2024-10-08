@@ -415,10 +415,11 @@ public class Grid : MonoBehaviour
                     if (match == null) continue;
                     foreach (var gamePiece in match)
                     {
-                        if (timeswap.role == TimeBar.Role.Player)
-                        {
-                            gameManager.HandleItemBehaviour(gamePiece);
-                        }
+                        gameManager.HandleItemBehaviour(gamePiece);
+                        // if (timeswap.role == TimeBar.Role.Player)
+                        // {
+                        //     gameManager.HandleItemBehaviour(gamePiece);
+                        // }
                         BoxCollider2D boxCollider = gamePiece.GetComponent<BoxCollider2D>();
                         if (boxCollider != null)
                         {
