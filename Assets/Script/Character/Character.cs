@@ -5,37 +5,44 @@ using UnityEngine.UI;
 
 public abstract class Character : MonoBehaviour
 {
-    public Slider HealthSlider;
-    public Slider EaseHealthSilder;
     public float attack;
-    public float health;
-    public float MaxHealth = 100f;
-    private float LerpSpeed = 0.01f;
+    [HideInInspector] public float health;
+    [HideInInspector] public float lerpTimer;
+    public float maxHealth = 100f;
+    public float chipSpeed = 2f;
+    public Image fontHealthBar;
+    public Image backHealthBar;
     public abstract void Attack(Character target);
     public abstract void TakeHit(float damage);
     public abstract void Dead();
-    public abstract void Health(float mount);
+    public abstract void RestoreHealth(float mount);
     public void Start()
     {
-        health = MaxHealth;
+        health = maxHealth;
     }
     public void Update()
     {
-        if (HealthSlider.value != health)
+        health = Mathf.Clamp(health, 0, maxHealth);
+        float fillFont = fontHealthBar.fillAmount;
+        float fillBack = backHealthBar.fillAmount;
+        float hFraction = health / maxHealth;
+        if (fillBack > hFraction)
         {
-            HealthSlider.value = health;
+            fontHealthBar.fillAmount = hFraction;
+            backHealthBar.color = Color.red;
+            lerpTimer += Time.deltaTime;
+            float percentComplete = lerpTimer / chipSpeed;
+            percentComplete = percentComplete * percentComplete;
+            backHealthBar.fillAmount = Mathf.Lerp(fillBack, hFraction, percentComplete);
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        else
         {
-            TakeDamage(10);
+            backHealthBar.fillAmount = hFraction;
+            backHealthBar.color = Color.green;
+            lerpTimer += Time.deltaTime;
+            float percentComplete = lerpTimer / chipSpeed;
+            percentComplete = percentComplete * percentComplete;
+            fontHealthBar.fillAmount = Mathf.Lerp(fillFont, hFraction, percentComplete);
         }
-        if (HealthSlider.value != EaseHealthSilder.value)
-        {
-            EaseHealthSilder.value = Mathf.Lerp(EaseHealthSilder.value, health, LerpSpeed);
-        }
-    }
-    void TakeDamage(float damege)
-    {
-        health -= damege;
     }
 }

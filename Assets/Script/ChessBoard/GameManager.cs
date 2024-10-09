@@ -27,6 +27,16 @@ public class GameManager : MonoBehaviour
                     enemy.Attack(player);
                 }
             } },
+            {ItemPieces.ItemType.Apple, (GamePieces piece) => {
+                if(timeswap.role == TimeBar.Role.Player)
+                {
+                    player.RestoreHealth(10);
+                }
+                else
+                {
+                    enemy.RestoreHealth(10);
+                }
+            } }
 
         };
     }
