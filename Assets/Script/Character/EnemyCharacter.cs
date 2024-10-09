@@ -15,13 +15,16 @@ public class EnemyCharacter : Character
             animator.SetTrigger("Attack1");
         }
     }
-
+    public override void Health(float mount)
+    {
+        health += mount;
+    }
     public override void Dead()
     {
         //play Dead animation;
     }
 
-    public override void TakeHit(int damage)
+    public override void TakeHit(float damage)
     {
         health -= damage;
         if (health <= 0)

@@ -5,6 +5,10 @@ using UnityEngine;
 public class HeroCharater : Character
 {
     private Animator animator;
+    public override void Health(float mount)
+    {
+        health += mount;
+    }
     public override void Attack(Character target)
     {
         var atm = target.GetComponent<Character>();
@@ -21,7 +25,7 @@ public class HeroCharater : Character
         //play Dead animation;
     }
 
-    public override void TakeHit(int damage)
+    public override void TakeHit(float damage)
     {
         health -= damage;
         if (health <= 0)
