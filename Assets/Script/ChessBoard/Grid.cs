@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 public class Grid : MonoBehaviour
 {
     // public EnemyCharacter enemy;
@@ -35,6 +36,7 @@ public class Grid : MonoBehaviour
     public PiecePosition[] initialPieces;
 
     private Dictionary<PieceType, GameObject> _piecePrefabDict;
+    private Dictionary<ItemPieces.ItemType, float> _itemWeights;
     private GamePieces[,] _pieces;
     private bool _inverse;
 
@@ -62,6 +64,17 @@ public class Grid : MonoBehaviour
     public void Start()
     {
         _piecePrefabDict = new Dictionary<PieceType, GameObject>();
+        _itemWeights = new Dictionary<ItemPieces.ItemType, float>
+        {
+            { ItemPieces.ItemType.Sword, 0.1f },
+            { ItemPieces.ItemType.Shield, 0.1f },
+            { ItemPieces.ItemType.Apple, 0.1f },
+            { ItemPieces.ItemType.AppleGreen, 0.1f },
+            { ItemPieces.ItemType.Beer, 0.1f },
+            { ItemPieces.ItemType.Heart, 0.1f },
+            { ItemPieces.ItemType.Armor, 0.1f },
+            { ItemPieces.ItemType.Mushroom, 0.1f },
+        };
         for (int i = 0; i < piecePrefabs.Length; i++)
         {
             if (!_piecePrefabDict.ContainsKey(piecePrefabs[i].type))
@@ -160,12 +173,34 @@ public class Grid : MonoBehaviour
                 _pieces[x, 0] = newPiece.GetComponent<GamePieces>();
                 _pieces[x, 0].Init(x, -1, this, PieceType.NORMAL);
                 _pieces[x, 0].MovableComponent.Move(x, 0, FillTime);
-                int randomIndex = UnityEngine.Random.Range(0, _pieces[x, 0].ItemComponent.NumItems);
-                _pieces[x, 0].ItemComponent.SetItem((ItemPieces.ItemType)randomIndex);
+                // int randomIndex = UnityEngine.Random.Range(0, _pieces[x, 0].ItemComponent.NumItems);
+                ItemPieces.ItemType randomIndex = GetRandomItemType();
+                _pieces[x, 0].ItemComponent.SetItem(randomIndex);
                 movedPiece = true;
             }
         }
         return movedPiece;
+    }
+    private ItemPieces.ItemType GetRandomItemType()
+    {
+        float totalWeight = 0;
+        foreach (var weight in _itemWeights.Values)
+        {
+            totalWeight += weight;
+        }
+
+        float randomValue = UnityEngine.Random.Range(0, totalWeight);
+        float cumulativeWeight = 0;
+
+        foreach (var kvp in _itemWeights)
+        {
+            cumulativeWeight += kvp.Value;
+            if (randomValue < cumulativeWeight)
+            {
+                return kvp.Key;
+            }
+        }
+        return ItemPieces.ItemType.Sword;
     }
     public GamePieces SpawnNewPiece(int x, int y, PieceType type)
     {
@@ -175,6 +210,7 @@ public class Grid : MonoBehaviour
         _pieces[x, y].Init(x, y, this, type);
         return _pieces[x, y];
     }
+
     private static bool IsAdjacent(GamePieces piece1, GamePieces piece2)
     {
         return (piece1.X == piece2.X && (int)Mathf.Abs(piece1.Y - piece2.Y) == 1) ||
@@ -416,10 +452,6 @@ public class Grid : MonoBehaviour
                     foreach (var gamePiece in match)
                     {
                         gameManager.HandleItemBehaviour(gamePiece);
-                        // if (timeswap.role == TimeBar.Role.Player)
-                        // {
-                        //     gameManager.HandleItemBehaviour(gamePiece);
-                        // }
                         BoxCollider2D boxCollider = gamePiece.GetComponent<BoxCollider2D>();
                         if (boxCollider != null)
                         {

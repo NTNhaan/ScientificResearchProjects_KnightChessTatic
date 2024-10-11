@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 public class ItemPieces : MonoBehaviour
 {
     public enum ItemType
@@ -14,12 +14,12 @@ public class ItemPieces : MonoBehaviour
         Armor,
         Shield,
         Mushroom,
-        Coin,
-        Tourch,
-        RedPotion,
-        BluePotion,
-        Any,
-        Count
+        // Coin,
+        // Tourch,
+        // RedPotion,
+        // BluePotion,
+        // Any,
+        // Count
     }
     [System.Serializable]
     public struct ItemSprite
@@ -36,7 +36,7 @@ public class ItemPieces : MonoBehaviour
     }
     public int NumItems
     {
-        get { return itemSprites.Length; }
+        get { return Enum.GetValues(typeof(ItemType)).Length; }
     }
     private SpriteRenderer _sprite;
     private Dictionary<ItemType, Sprite> _itemSpriteDict;
