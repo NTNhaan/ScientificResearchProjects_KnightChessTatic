@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public abstract class Character : MonoBehaviour
 {
     public float attack;
-    [HideInInspector] public float health;
+    public float health;
     [HideInInspector] public float lerpTimer;
     public float maxHealth = 100f;
     public float chipSpeed = 2f;
