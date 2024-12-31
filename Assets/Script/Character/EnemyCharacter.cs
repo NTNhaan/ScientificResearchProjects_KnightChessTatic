@@ -22,15 +22,10 @@ public class EnemyCharacter : Character
     private void EndAnimation(Animator animator)
     {
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        while (stateInfo.normalizedTime < 1.0f)
+        while (stateInfo.normalizedTime < 0.5f)
         {
             stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         }
-    }
-    public override void Dead()
-    {
-        animator.SetTrigger("Death");
-        EndAnimation(animator);
     }
     public override void TakeHit(float damage)
     {
@@ -41,6 +36,11 @@ public class EnemyCharacter : Character
         {
             Dead();
         }
+    }
+    public override void Dead()
+    {
+        animator.SetTrigger("Death");
+        EndAnimation(animator);
     }
     public override void RestoreHealth(float healAmount)
     {

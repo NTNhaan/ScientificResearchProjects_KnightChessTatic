@@ -30,11 +30,11 @@ public class GameManager : MonoBehaviour
             {ItemPieces.ItemType.Apple, (GamePieces piece) => {
                 if(timeswap.role == TimeBar.Role.Player)
                 {
-                    player.RestoreHealth(10);
+                    player.RestoreHealth(5);
                 }
                 else
                 {
-                    enemy.RestoreHealth(10);
+                    enemy.RestoreHealth(5);
                 }
             } }
 

@@ -21204,7 +21204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfee3fca921032b4197e329e41cec767, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attack: 50
+  attack: 10
   health: 100
   lerpTimer: 0
   maxHealth: 100
@@ -47197,7 +47197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecd7e44ad8f637640ac1b871edf9c8a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attack: 5
+  attack: 10
   health: 100
   lerpTimer: 0
   maxHealth: 100

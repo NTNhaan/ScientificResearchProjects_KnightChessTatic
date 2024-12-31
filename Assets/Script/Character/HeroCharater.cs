@@ -26,7 +26,7 @@ public class HeroCharater : Character
     private void EndAnimation(Animator animator)
     {
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        while (stateInfo.normalizedTime < 1.0f)
+        while (stateInfo.normalizedTime < 0.5f)
         {
             stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         }

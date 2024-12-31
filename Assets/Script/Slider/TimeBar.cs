@@ -42,7 +42,6 @@ public class TimeBar : MonoBehaviour
             isPaused = false;
             role = Role.Demon;
             TimeSliderHero.value = MaxTime;
-
         }
         else if (role == Role.Demon)
         {
