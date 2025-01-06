@@ -232,17 +232,20 @@ public class Grid : MonoBehaviour
         int piece1Y = piece1.Y;
         piece1.MovableComponent.Move(piece2.X, piece2.Y, FillTime);
         piece2.MovableComponent.Move(piece1X, piece1Y, FillTime);
-        if (timeswap.role == TimeBar.Role.Player)
-        {
-            timeswap.Pause();
-            // thực hiện animation của piece tạo thành match trước
-            timeswap.PlayAnimation("StartTurn");
-        }
-        else if (timeswap.role == TimeBar.Role.Demon)
-        {
-            timeswap.Pause();
-            timeswap.PlayAnimation("StartTurnBack");
-        }
+
+
+        // ẩn đi timeswap khi thực hiện swap để train AI
+        // if (timeswap.role == TimeBar.Role.Player)
+        // {
+        //     timeswap.Pause();
+        //     // thực hiện animation của piece tạo thành match trước
+        //     timeswap.PlayAnimation("StartTurn");
+        // }
+        // else if (timeswap.role == TimeBar.Role.Demon)
+        // {
+        //     timeswap.Pause();
+        //     timeswap.PlayAnimation("StartTurnBack");
+        // }
         ClearAllValidMatches();
         StartCoroutine(Fill());
         // if (match1 != null || match2 != null)
@@ -478,6 +481,81 @@ public class Grid : MonoBehaviour
         return false;
     }
 
+
+
+    //  methods for tranning agent
+    public GamePieces GetPieces(int x, int y)
+    {
+        if (x >= xDim || y >= yDim || x < 0 || y < 0)
+        {
+            return null;
+        }
+        return _pieces[x, y];
+    }
+    public bool AgentSwapPiece(int index1, int index2)
+    {
+        GamePieces piece1 = GetPieces(index1 / xDim, index1 % xDim);
+        GamePieces piece2 = GetPieces(index2 / xDim, index2 % xDim);
+
+        if (piece1 == null || piece2 == null)
+        {
+            return false;
+        }
+        if (!IsAdjacent(piece1, piece2))
+        {
+            return false;
+        }
+        SwapPiece(piece1, piece2);
+        return true;
+    }
+    public int CheckMatches()
+    {
+        int count = 0;
+        for (int y = 0; y < yDim; y++)
+        {
+            for (int x = 0; x < xDim; x++)
+            {
+                if (_pieces[x, y].IsClearable())
+                {
+                    List<GamePieces> match = GetMatch(_pieces[x, y], x, y);
+                    if (match == null) continue;
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+    private bool IsMovePossible(int x, int y)
+    {
+        // check if the piece is moveable
+        GamePieces piece = GetPieces(x, y);
+        if (piece == null) return false;
+
+        if (x > 0 && IsAdjacent(piece, GetPieces(x - 1, y))) return true;
+        if (x < xDim - 1 && IsAdjacent(piece, GetPieces(x + 1, y))) return true;
+        if (y > 0 && IsAdjacent(piece, GetPieces(x, y - 1))) return true;
+        if (y < yDim - 1 && IsAdjacent(piece, GetPieces(x, y + 1))) return true;
+
+        return false;
+    }
+    public bool IsGameOver()
+    {
+        // kiểm tra các nước đi ko hợp lệ thì kết thúc trò chơi.
+        for (int x = 0; x < xDim; x++)
+        {
+            for (int y = 0; y < yDim; y++)
+            {
+                if (IsMovePossible(x, y))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+    // auxiliary methods
     Vector2 GetPrefabSize(GameObject prefab)
     {
         Renderer prefabRederer = prefab.GetComponent<Renderer>();

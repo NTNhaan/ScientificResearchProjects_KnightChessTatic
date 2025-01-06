@@ -60,3 +60,4 @@ Assembly-CSharp.csproj
 .vscode/
 .vsconfig
 .plastic/
+venv/
