@@ -43,13 +43,43 @@ public class GameManager : MonoBehaviour
 
     public void HandleItemBehaviour(GamePieces piece)
     {
-        if (itemBehaviors.ContainsKey(piece.ItemComponent.Item))
+        // if (itemBehaviors.ContainsKey(piece.ItemComponent.Item))
+        // {
+        //     itemBehaviors[piece.ItemComponent.Item].Invoke(piece);
+        // }
+        // else
+        // {
+        //     Debug.Log("No item behavior found for " + piece.ItemComponent.Item);
+        // }
+        switch (piece.ItemComponent.Item)
         {
-            itemBehaviors[piece.ItemComponent.Item].Invoke(piece);
-        }
-        else
-        {
-            Debug.Log("No item behavior found for " + piece.ItemComponent.Item);
+            case ItemPieces.ItemType.Apple:
+                // Handle Apple behavior
+                break;
+            case ItemPieces.ItemType.AppleGreen:
+                // Handle AppleGreen behavior
+                break;
+            case ItemPieces.ItemType.Beer:
+                // Handle Beer behavior
+                break;
+            case ItemPieces.ItemType.Sword:
+                // Handle Sword behavior
+                break;
+            case ItemPieces.ItemType.Heart:
+                // Handle Heart behavior
+                break;
+            case ItemPieces.ItemType.Armor:
+                // Handle Armor behavior
+                break;
+            case ItemPieces.ItemType.Shield:
+                // Handle Shield behavior
+                break;
+            case ItemPieces.ItemType.Mushroom:
+                // Handle Mushroom behavior
+                break;
+            default:
+                Debug.LogError($"No item behavior found for {piece.ItemComponent.Item}");
+                break;
         }
     }
 }

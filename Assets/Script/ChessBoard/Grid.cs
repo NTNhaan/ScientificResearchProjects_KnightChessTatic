@@ -55,6 +55,7 @@ public class Grid : MonoBehaviour
     {
         isFilling = value;
     }
+
     public void Awake()
     {
         role = TimeBar.Role.Player;
@@ -221,9 +222,11 @@ public class Grid : MonoBehaviour
     {
         if (!piece1.IsMoveable() && !piece2.IsMoveable())
         {
-            //Debug.Log("Can't swap piece, so piece is null " + piece1 + " " + piece2);
+            Debug.Log("One of the pieces is not moveable");
             return;
         }
+        Debug.Log($"Swapping pieces: ({piece1.X}, {piece1.Y}) with ({piece2.X}, {piece2.Y})");
+
         _pieces[piece1.X, piece1.Y] = piece2;
         _pieces[piece2.X, piece2.Y] = piece1;
         var match1 = GetMatch(piece1, piece2.X, piece2.Y);
@@ -454,7 +457,7 @@ public class Grid : MonoBehaviour
                     if (match == null) continue;
                     foreach (var gamePiece in match)
                     {
-                        gameManager.HandleItemBehaviour(gamePiece);
+                        gameManager.HandleItemBehaviour(gamePiece);  // xử lý action khi match piece
                         BoxCollider2D boxCollider = gamePiece.GetComponent<BoxCollider2D>();
                         if (boxCollider != null)
                         {
@@ -497,14 +500,18 @@ public class Grid : MonoBehaviour
         GamePieces piece1 = GetPieces(index1 / xDim, index1 % xDim);
         GamePieces piece2 = GetPieces(index2 / xDim, index2 % xDim);
 
+        Debug.Log($"Attempting to swap pieces at index {index1} and {index2}");
         if (piece1 == null || piece2 == null)
         {
+            Debug.Log("One of the pieces is null");
             return false;
         }
         if (!IsAdjacent(piece1, piece2))
         {
+            Debug.Log("Pieces are not adjacent");
             return false;
         }
+        Debug.Log($"Swapping pieces: ({piece1.X}, {piece1.Y}) with ({piece2.X}, {piece2.Y})");
         SwapPiece(piece1, piece2);
         return true;
     }
@@ -519,23 +526,45 @@ public class Grid : MonoBehaviour
                 {
                     List<GamePieces> match = GetMatch(_pieces[x, y], x, y);
                     if (match == null) continue;
+                    Debug.Log($"Match found at ({x}, {y})");
                     count++;
                 }
             }
         }
+        Debug.Log($"Total matches found: {count}");
         return count;
     }
     private bool IsMovePossible(int x, int y)
     {
         // check if the piece is moveable
         GamePieces piece = GetPieces(x, y);
-        if (piece == null) return false;
+        if (piece == null)
+        {
+            Debug.Log($"Piece at ({x}, {y}) is null");
+            return false;
+        }
 
-        if (x > 0 && IsAdjacent(piece, GetPieces(x - 1, y))) return true;
-        if (x < xDim - 1 && IsAdjacent(piece, GetPieces(x + 1, y))) return true;
-        if (y > 0 && IsAdjacent(piece, GetPieces(x, y - 1))) return true;
-        if (y < yDim - 1 && IsAdjacent(piece, GetPieces(x, y + 1))) return true;
-
+        if (x > 0 && IsAdjacent(piece, GetPieces(x - 1, y)))
+        {
+            Debug.Log($"Piece at ({x}, {y}) can move to ({x - 1}, {y})");
+            return true;
+        }
+        if (x < xDim - 1 && IsAdjacent(piece, GetPieces(x + 1, y)))
+        {
+            Debug.Log($"Piece at ({x}, {y}) can move to ({x + 1}, {y})");
+            return true;
+        }
+        if (y > 0 && IsAdjacent(piece, GetPieces(x, y - 1)))
+        {
+            Debug.Log($"Piece at ({x}, {y}) can move to ({x}, {y - 1})");
+            return true;
+        }
+        if (y < yDim - 1 && IsAdjacent(piece, GetPieces(x, y + 1)))
+        {
+            Debug.Log($"Piece at ({x}, {y}) can move to ({x}, {y + 1})");
+            return true;
+        }
+        Debug.Log($"Piece at ({x}, {y}) cannot move");
         return false;
     }
     public bool IsGameOver()
