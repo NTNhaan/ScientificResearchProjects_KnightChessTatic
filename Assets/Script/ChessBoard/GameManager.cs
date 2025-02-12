@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
     public HeroCharater player;
     [SerializeField] private TimeBar timeswap;
 
+    public int CurrentScore { get; private set; }
+    public int RemainingMoves { get; private set; }
+
     void Awake()
     {
         timeswap = FindObjectOfType<TimeBar>();

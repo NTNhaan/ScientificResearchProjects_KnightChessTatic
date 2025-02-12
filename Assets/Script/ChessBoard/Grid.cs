@@ -37,7 +37,7 @@ public class Grid : MonoBehaviour
 
     private Dictionary<PieceType, GameObject> _piecePrefabDict;
     private Dictionary<ItemPieces.ItemType, float> _itemWeights;
-    private GamePieces[,] _pieces;
+    public GamePieces[,] _pieces;
     private bool _inverse;
 
     public Vector2[,] backgroundPositions;
@@ -209,15 +209,21 @@ public class Grid : MonoBehaviour
         newPiece.transform.parent = transform;
         _pieces[x, y] = newPiece.GetComponent<GamePieces>();
         _pieces[x, y].Init(x, y, this, type);
+
+        if (_pieces[x, y].ItemComponent == null)
+        {
+            Debug.LogError($"ItemComponent is null for piece at position [{x}, {y}]");
+        }
+
         return _pieces[x, y];
     }
 
-    private static bool IsAdjacent(GamePieces piece1, GamePieces piece2)
+    public static bool IsAdjacent(GamePieces piece1, GamePieces piece2)
     {
-        return (piece1.X == piece2.X && (int)Mathf.Abs(piece1.Y - piece2.Y) == 1) ||
-        (piece1.Y == piece2.Y && (int)Mathf.Abs(piece1.X - piece2.X) == 1);
-
+        return (piece1.X == piece2.X && Mathf.Abs(piece1.Y - piece2.Y) == 1) ||
+               (piece1.Y == piece2.Y && Mathf.Abs(piece1.X - piece2.X) == 1);
     }
+
     public void SwapPiece(GamePieces piece1, GamePieces piece2)
     {
         if (!piece1.IsMoveable() && !piece2.IsMoveable())
@@ -251,32 +257,6 @@ public class Grid : MonoBehaviour
         // }
         ClearAllValidMatches();
         StartCoroutine(Fill());
-        // if (match1 != null || match2 != null)
-        // {
-        //     int piece1X = piece1.X;
-        //     int piece1Y = piece1.Y;
-        //     piece1.MovableComponent.Move(piece2.X, piece2.Y, FillTime);
-        //     piece2.MovableComponent.Move(piece1X, piece1Y, FillTime);
-        //     if (timeswap.role == TimeBar.Role.Player)
-        //     {
-        //         timeswap.Pause();
-        //         // thực hiện animation của piece tạo thành match trước
-        //         timeswap.PlayAnimation("StartTurn");
-        //     }
-        //     else if (timeswap.role == TimeBar.Role.Demon)
-        //     {
-        //         timeswap.Pause();
-        //         timeswap.PlayAnimation("StartTurnBack");
-        //     }
-        //     ClearAllValidMatches();
-        //     StartCoroutine(Fill());
-        // }
-        // else
-        // {
-        //     StartCoroutine(SwapPiecesBack(piece1, piece2, FillTime));
-        //     // _pieces[piece1.X, piece1.Y] = piece1;
-        //     // _pieces[piece2.X, piece2.Y] = piece2;
-        // }
     }
     IEnumerator SwapPiecesBack(GamePieces piece1, GamePieces piece2, float delay)
     {
@@ -486,104 +466,6 @@ public class Grid : MonoBehaviour
 
 
 
-    //  methods for tranning agent
-    public GamePieces GetPieces(int x, int y)
-    {
-        if (x >= xDim || y >= yDim || x < 0 || y < 0)
-        {
-            return null;
-        }
-        return _pieces[x, y];
-    }
-    public bool AgentSwapPiece(int index1, int index2)
-    {
-        GamePieces piece1 = GetPieces(index1 / xDim, index1 % xDim);
-        GamePieces piece2 = GetPieces(index2 / xDim, index2 % xDim);
-
-        Debug.Log($"Attempting to swap pieces at index {index1} and {index2}");
-        if (piece1 == null || piece2 == null)
-        {
-            Debug.Log("One of the pieces is null");
-            return false;
-        }
-        if (!IsAdjacent(piece1, piece2))
-        {
-            Debug.Log("Pieces are not adjacent");
-            return false;
-        }
-        Debug.Log($"Swapping pieces: ({piece1.X}, {piece1.Y}) with ({piece2.X}, {piece2.Y})");
-        SwapPiece(piece1, piece2);
-        return true;
-    }
-    public int CheckMatches()
-    {
-        int count = 0;
-        for (int y = 0; y < yDim; y++)
-        {
-            for (int x = 0; x < xDim; x++)
-            {
-                if (_pieces[x, y].IsClearable())
-                {
-                    List<GamePieces> match = GetMatch(_pieces[x, y], x, y);
-                    if (match == null) continue;
-                    Debug.Log($"Match found at ({x}, {y})");
-                    count++;
-                }
-            }
-        }
-        Debug.Log($"Total matches found: {count}");
-        return count;
-    }
-    private bool IsMovePossible(int x, int y)
-    {
-        // check if the piece is moveable
-        GamePieces piece = GetPieces(x, y);
-        if (piece == null)
-        {
-            Debug.Log($"Piece at ({x}, {y}) is null");
-            return false;
-        }
-
-        if (x > 0 && IsAdjacent(piece, GetPieces(x - 1, y)))
-        {
-            Debug.Log($"Piece at ({x}, {y}) can move to ({x - 1}, {y})");
-            return true;
-        }
-        if (x < xDim - 1 && IsAdjacent(piece, GetPieces(x + 1, y)))
-        {
-            Debug.Log($"Piece at ({x}, {y}) can move to ({x + 1}, {y})");
-            return true;
-        }
-        if (y > 0 && IsAdjacent(piece, GetPieces(x, y - 1)))
-        {
-            Debug.Log($"Piece at ({x}, {y}) can move to ({x}, {y - 1})");
-            return true;
-        }
-        if (y < yDim - 1 && IsAdjacent(piece, GetPieces(x, y + 1)))
-        {
-            Debug.Log($"Piece at ({x}, {y}) can move to ({x}, {y + 1})");
-            return true;
-        }
-        Debug.Log($"Piece at ({x}, {y}) cannot move");
-        return false;
-    }
-    public bool IsGameOver()
-    {
-        // kiểm tra các nước đi ko hợp lệ thì kết thúc trò chơi.
-        for (int x = 0; x < xDim; x++)
-        {
-            for (int y = 0; y < yDim; y++)
-            {
-                if (IsMovePossible(x, y))
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-
     // auxiliary methods
     Vector2 GetPrefabSize(GameObject prefab)
     {
@@ -608,12 +490,12 @@ public class Grid : MonoBehaviour
     public void PressPiece(GamePieces piece)
     {
         pressedPiece = piece;
-        Debug.Log("location for PressPiece: " + piece.X + " " + piece.Y);
+        // Debug.Log("location for PressPiece: " + piece.X + " " + piece.Y);
     }
     public void EnterPiece(GamePieces piece)
     {
         enteredPiece = piece;
-        Debug.Log("location for EnterPiece: " + piece.X + " " + piece.Y);
+        // Debug.Log("location for EnterPiece: " + piece.X + " " + piece.Y);
     }
     public void ReleasePiece()
     {

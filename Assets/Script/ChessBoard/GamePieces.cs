@@ -62,6 +62,11 @@ public class GamePieces : MonoBehaviour
         movableComponent = GetComponent<MovablePiece>();
         itemComponent = GetComponent<ItemPieces>();
         clearablePiece = GetComponent<ClearablePiece>();
+
+        if (itemComponent == null)
+        {
+            Debug.LogError("ItemComponent is not assigned");
+        }
     }
     public void Init(int x, int y, Grid grid, Grid.PieceType type)
     {
