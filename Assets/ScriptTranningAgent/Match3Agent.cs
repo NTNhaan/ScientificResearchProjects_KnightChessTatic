@@ -33,37 +33,11 @@ namespace KnightChessTatic
 
         public override void CollectObservations(VectorSensor sensor)
         {
-            if (grid == null)
-            {
-                Debug.LogError("Grid is null");
-                return;
-            }
-            if (gameManager == null)
-            {
-                Debug.LogError("GameManager is null");
-                return;
-            }
-            if (grid._pieces == null)
-            {
-                Debug.LogError("grid._pieces is null");
-                return;
-            }
-
             // Encode the 8x8 grid into 448 values
             for (int x = 0; x < boardSizeX; x++)
             {
                 for (int y = 0; y < boardSizeY; y++)
                 {
-                    if (grid._pieces[x, y] == null)
-                    {
-                        Debug.LogError($"grid._pieces[{x}, {y}] is null");
-                        continue;
-                    }
-                    if (grid._pieces[x, y].ItemComponent == null)
-                    {
-                        Debug.LogError($"grid._pieces[{x}, {y}].ItemComponent is null");
-                        continue;
-                    }
                     sensor.AddOneHotObservation((int)grid._pieces[x, y].ItemComponent.Item,
                     System.Enum.GetValues(typeof(ItemPieces.ItemType)).Length);
                 }
@@ -75,15 +49,39 @@ namespace KnightChessTatic
 
         public override void OnActionReceived(ActionBuffers actions)
         {
+            if (actions.DiscreteActions.Length < 4)
+            {
+                Debug.LogError("Insufficient actions received");
+                EndEpisode();
+                return;
+            }
+
             int x1 = Mathf.Clamp(actions.DiscreteActions[0], 0, boardSizeX - 1);
             int y1 = Mathf.Clamp(actions.DiscreteActions[1], 0, boardSizeY - 1);
             int x2 = Mathf.Clamp(actions.DiscreteActions[2], 0, boardSizeX - 1);
             int y2 = Mathf.Clamp(actions.DiscreteActions[3], 0, boardSizeY - 1);
+            Debug.Log($"Agent action: ({x1},{y1}) => ({x2},{y2})");
+
+            if (x1 < 0 || x1 >= boardSizeX || y1 < 0 || y1 >= boardSizeY || x2 < 0 || x2 >= boardSizeX || y2 < 0 || y2 >= boardSizeY)
+            {
+                AddReward(-1f);
+                EndEpisode();
+                return;
+            }
 
             GamePieces piece1 = grid._pieces[x1, y1];
             GamePieces piece2 = grid._pieces[x2, y2];
+            if (piece1 == null || piece2 == null)
+            {
+                Debug.LogError("One of the pieces is null");
+                AddReward(-1f);
+                EndEpisode();
+                return;
+            }
+
             if (Grid.IsAdjacent(piece1, piece2))
             {
+                Debug.Log("Swapping pieces");
                 grid.SwapPiece(piece1, piece2);
                 AddReward(0.1f); // Reward for valid swap
 
@@ -92,6 +90,7 @@ namespace KnightChessTatic
             }
             else
             {
+                Debug.LogError("Pieces are not adjacent");
                 AddReward(-0.2f); // Penalty for invalid swap
                 EndEpisode();
             }
@@ -104,16 +103,23 @@ namespace KnightChessTatic
             AddReward(scoreReward);
             lastScore = gameManager.CurrentScore;
 
+            Debug.Log("Ending episode");
             EndEpisode();
         }
 
         public override void Heuristic(in ActionBuffers actionsOut)
         {
             var discreteActions = actionsOut.DiscreteActions;
-            discreteActions[0] = Random.Range(0, 8);
-            discreteActions[1] = Random.Range(0, 8);
-            discreteActions[2] = Random.Range(0, 8);
-            discreteActions[3] = Random.Range(0, 8);
+            if (discreteActions.Length < 4)
+            {
+                Debug.LogError("Insufficient actions for heuristic");
+                return;
+            }
+
+            discreteActions[0] = Random.Range(0, boardSizeX);
+            discreteActions[1] = Random.Range(0, boardSizeY);
+            discreteActions[2] = Random.Range(0, boardSizeX);
+            discreteActions[3] = Random.Range(0, boardSizeY);
         }
     }
 }

@@ -210,10 +210,14 @@ public class Grid : MonoBehaviour
         _pieces[x, y] = newPiece.GetComponent<GamePieces>();
         _pieces[x, y].Init(x, y, this, type);
 
-        if (_pieces[x, y].ItemComponent == null)
-        {
-            Debug.LogError($"ItemComponent is null for piece at position [{x}, {y}]");
-        }
+        // if (_pieces[x, y].ItemComponent == null)
+        // {
+        //     Debug.LogError($"ItemComponent is null for piece at position [{x}, {y}]");
+        // }
+        // else
+        // {
+        //     Debug.Log($"ItemComponent is assigned for piece at position [{x}, {y}]");
+        // }
 
         return _pieces[x, y];
     }
@@ -221,7 +225,7 @@ public class Grid : MonoBehaviour
     public static bool IsAdjacent(GamePieces piece1, GamePieces piece2)
     {
         return (piece1.X == piece2.X && Mathf.Abs(piece1.Y - piece2.Y) == 1) ||
-               (piece1.Y == piece2.Y && Mathf.Abs(piece1.X - piece2.X) == 1);
+            (piece1.Y == piece2.Y && Mathf.Abs(piece1.X - piece2.X) == 1);
     }
 
     public void SwapPiece(GamePieces piece1, GamePieces piece2)
@@ -232,6 +236,12 @@ public class Grid : MonoBehaviour
             return;
         }
         Debug.Log($"Swapping pieces: ({piece1.X}, {piece1.Y}) with ({piece2.X}, {piece2.Y})");
+        if (piece1 == null || piece2 == null ||
+            piece1.ItemComponent == null || piece2.ItemComponent == null)
+        {
+            Debug.LogError("Invalid pieces for swap");
+            return;
+        }
 
         _pieces[piece1.X, piece1.Y] = piece2;
         _pieces[piece2.X, piece2.Y] = piece1;
@@ -258,6 +268,7 @@ public class Grid : MonoBehaviour
         ClearAllValidMatches();
         StartCoroutine(Fill());
     }
+
     IEnumerator SwapPiecesBack(GamePieces piece1, GamePieces piece2, float delay)
     {
         yield return new WaitForSeconds(delay);

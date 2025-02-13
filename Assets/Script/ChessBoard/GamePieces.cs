@@ -63,10 +63,14 @@ public class GamePieces : MonoBehaviour
         itemComponent = GetComponent<ItemPieces>();
         clearablePiece = GetComponent<ClearablePiece>();
 
-        if (itemComponent == null)
-        {
-            Debug.LogError("ItemComponent is not assigned");
-        }
+        // if (itemComponent == null)
+        // {
+        //     // Debug.LogError("ItemComponent is not assigned");
+        // }
+        // else
+        // {
+        //     Debug.Log("ItemComponent is assigned");
+        // }
     }
     public void Init(int x, int y, Grid grid, Grid.PieceType type)
     {

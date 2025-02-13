@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+
 public class ItemPieces : MonoBehaviour
 {
     public enum ItemType
@@ -17,7 +18,6 @@ public class ItemPieces : MonoBehaviour
         // Coin,
         // Tourch,
         // RedPotion,
-        // BluePotion,
         // Any,
         // Count
     }
@@ -43,6 +43,11 @@ public class ItemPieces : MonoBehaviour
     public void Awake()
     {
         _sprite = transform.Find("piece").GetComponent<SpriteRenderer>();
+        if (_sprite == null)
+        {
+            Debug.LogError("SpriteRenderer not found on piece");
+        }
+
         _itemSpriteDict = new Dictionary<ItemType, Sprite>();
         for (int i = 0; i < itemSprites.Length; i++)
         {

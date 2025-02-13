@@ -10,16 +10,7 @@ public class MovablePiece : MonoBehaviour
     {
         piece = GetComponent<GamePieces>();
     }
-    void Start()
-    {
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     public void Move(int newX, int newY, float time)
     {
         if (moveCoroutine != null)
@@ -29,6 +20,7 @@ public class MovablePiece : MonoBehaviour
         moveCoroutine = MoveCoroutine(newX, newY, time);
         StartCoroutine(moveCoroutine);
     }
+
     private IEnumerator MoveCoroutine(int newX, int newY, float time)
     {
         piece.X = newX;
@@ -39,7 +31,6 @@ public class MovablePiece : MonoBehaviour
         {
             piece.transform.position = Vector3.Lerp(startPos, endPos, t / time);
             yield return null;
-
         }
         piece.transform.position = endPos;
     }
