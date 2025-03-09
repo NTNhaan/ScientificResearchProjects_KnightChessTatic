@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+
 public class Grid : MonoBehaviour
 {
     // public EnemyCharacter enemy;
@@ -56,6 +57,7 @@ public class Grid : MonoBehaviour
         isFilling = value;
     }
 
+
     public void Awake()
     {
         role = TimeBar.Role.Player;
@@ -66,16 +68,16 @@ public class Grid : MonoBehaviour
     {
         _piecePrefabDict = new Dictionary<PieceType, GameObject>();
         _itemWeights = new Dictionary<ItemPieces.ItemType, float>
-        {
-            { ItemPieces.ItemType.Sword, 0.1f },
-            { ItemPieces.ItemType.Shield, 0.1f },
-            { ItemPieces.ItemType.Apple, 0.1f },
-            { ItemPieces.ItemType.AppleGreen, 0.1f },
-            { ItemPieces.ItemType.Beer, 0.1f },
-            { ItemPieces.ItemType.Heart, 0.1f },
-            { ItemPieces.ItemType.Armor, 0.1f },
-            { ItemPieces.ItemType.Mushroom, 0.1f },
-        };
+            {
+                { ItemPieces.ItemType.Sword, 0.1f },
+                { ItemPieces.ItemType.Shield, 0.1f },
+                { ItemPieces.ItemType.Apple, 0.1f },
+                { ItemPieces.ItemType.AppleGreen, 0.1f },
+                { ItemPieces.ItemType.Beer, 0.1f },
+                { ItemPieces.ItemType.Heart, 0.1f },
+                { ItemPieces.ItemType.Armor, 0.1f },
+                { ItemPieces.ItemType.Mushroom, 0.1f },
+            };
         for (int i = 0; i < piecePrefabs.Length; i++)
         {
             if (!_piecePrefabDict.ContainsKey(piecePrefabs[i].type))
@@ -204,7 +206,7 @@ public class Grid : MonoBehaviour
         return ItemPieces.ItemType.Sword;
     }
     public GamePieces SpawnNewPiece(int x, int y, PieceType type)
-    {
+    { // Tạo mảnh ghép mới tại vị trí xác định
         GameObject newPiece = (GameObject)Instantiate(_piecePrefabDict[type], GetWorldPosition(x, y, 0), Quaternion.identity);
         newPiece.transform.parent = transform;
         _pieces[x, y] = newPiece.GetComponent<GamePieces>();
@@ -223,14 +225,14 @@ public class Grid : MonoBehaviour
     }
 
     public static bool IsAdjacent(GamePieces piece1, GamePieces piece2)
-    {
+    {  // kiểm tra 2 mảnh có liền kề hay không
         return (piece1.X == piece2.X && Mathf.Abs(piece1.Y - piece2.Y) == 1) ||
             (piece1.Y == piece2.Y && Mathf.Abs(piece1.X - piece2.X) == 1);
     }
 
     public void SwapPiece(GamePieces piece1, GamePieces piece2)
     {
-        if (!piece1.IsMoveable() && !piece2.IsMoveable())
+        if (!piece1.IsMoveable() || !piece2.IsMoveable()) // chỉnh && thành ||
         {
             Debug.Log("One of the pieces is not moveable");
             return;
@@ -245,8 +247,8 @@ public class Grid : MonoBehaviour
 
         _pieces[piece1.X, piece1.Y] = piece2;
         _pieces[piece2.X, piece2.Y] = piece1;
-        var match1 = GetMatch(piece1, piece2.X, piece2.Y);
-        var match2 = GetMatch(piece2, piece1.X, piece1.Y);
+        // var match1 = GetMatch(piece1, piece2.X, piece2.Y);
+        // var match2 = GetMatch(piece2, piece1.X, piece1.Y);
         int piece1X = piece1.X;
         int piece1Y = piece1.Y;
         piece1.MovableComponent.Move(piece2.X, piece2.Y, FillTime);
@@ -475,8 +477,6 @@ public class Grid : MonoBehaviour
         return false;
     }
 
-
-
     // auxiliary methods
     Vector2 GetPrefabSize(GameObject prefab)
     {
@@ -498,6 +498,8 @@ public class Grid : MonoBehaviour
             transform.position.y + yDim / 2.0f - y + 2,
             transform.position.z);
     }
+
+
     public void PressPiece(GamePieces piece)
     {
         pressedPiece = piece;

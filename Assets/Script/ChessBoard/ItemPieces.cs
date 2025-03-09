@@ -24,8 +24,8 @@ public class ItemPieces : MonoBehaviour
     [System.Serializable]
     public struct ItemSprite
     {
-        public ItemType item;
-        public Sprite sprite;
+        public ItemType item; // loại mảng ghép
+        public Sprite sprite; // hình ảnh
     }
     public ItemSprite[] itemSprites; // mảng chứa các hình ảnh
     private ItemType item;
@@ -58,7 +58,7 @@ public class ItemPieces : MonoBehaviour
         }
     }
     public void SetItem(ItemType newItem)
-    {
+    { // thiết lập các loại mảng ghép với các hình ảnh tương ứng
         item = newItem;
         if (_itemSpriteDict.ContainsKey(newItem))
         {

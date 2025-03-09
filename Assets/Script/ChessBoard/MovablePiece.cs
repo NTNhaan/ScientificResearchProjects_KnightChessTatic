@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MovablePiece : MonoBehaviour
 {
+    // quản lý việc di chuyển các mảng trên lưới
     private GamePieces piece;
     private IEnumerator moveCoroutine;
     private void Awake()
@@ -12,7 +13,7 @@ public class MovablePiece : MonoBehaviour
     }
 
     public void Move(int newX, int newY, float time)
-    {
+    { // di chuyển mảng ghép đến vị trí mới trong mảng trong một khoảng tg nhất định
         if (moveCoroutine != null)
         {
             StopCoroutine(moveCoroutine);
@@ -22,7 +23,7 @@ public class MovablePiece : MonoBehaviour
     }
 
     private IEnumerator MoveCoroutine(int newX, int newY, float time)
-    {
+    { // thực hiện di chuyển mảng ghép
         piece.X = newX;
         piece.Y = newY;
         Vector3 startPos = transform.position;

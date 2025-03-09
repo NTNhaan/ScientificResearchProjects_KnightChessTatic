@@ -8,7 +8,7 @@ public class GamePieces : MonoBehaviour
     // -----------Properties
     private int _x;
     private int _y;
-    private Grid.PieceType _type;
+    private Grid.PieceType _type;  // loại mảng ghép
     private Grid _grid;
     private MovablePiece movableComponent;
     private ItemPieces itemComponent;
@@ -62,15 +62,6 @@ public class GamePieces : MonoBehaviour
         movableComponent = GetComponent<MovablePiece>();
         itemComponent = GetComponent<ItemPieces>();
         clearablePiece = GetComponent<ClearablePiece>();
-
-        // if (itemComponent == null)
-        // {
-        //     // Debug.LogError("ItemComponent is not assigned");
-        // }
-        // else
-        // {
-        //     Debug.Log("ItemComponent is assigned");
-        // }
     }
     public void Init(int x, int y, Grid grid, Grid.PieceType type)
     {
@@ -79,9 +70,11 @@ public class GamePieces : MonoBehaviour
         _grid = grid;
         _type = type;
     }
+    // sự kiện chuột để tương tác với mảng ghép
     private void OnMouseEnter() => _grid.EnterPiece(this);
     private void OnMouseDown() => _grid.PressPiece(this);
     private void OnMouseUp() => _grid.ReleasePiece();
+    // các phương thức kiểm tra trạng thái
     public bool IsMoveable()
     {
         return movableComponent != null;
