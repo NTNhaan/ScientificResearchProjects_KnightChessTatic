@@ -58086,12 +58086,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 1
+    VectorObservationSize: 66
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 0
-      BranchSizes: 01000000010000000100000001000000
-    VectorActionSize: 01000000010000000100000001000000
+      BranchSizes: 08000000080000000800000008000000
+    VectorActionSize: 08000000080000000800000008000000
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
@@ -58132,7 +58132,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DecisionPeriod: 1
-  TakeActionsBetweenDecisions: 0
+  TakeActionsBetweenDecisions: 1
 --- !u!114 &2054068690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58149,10 +58149,12 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
-  gameGrid: {fileID: 1566074622}
+  gameGrid: {fileID: 1192997996}
   gameManager: {fileID: 1192998005}
   enemyCharacter: {fileID: 807103519}
   playerCharacter: {fileID: 330669426}
+  observationSize: 66
+  branchSizes: 08000000080000000800000008000000
 --- !u!1 &2062918728
 GameObject:
   m_ObjectHideFlags: 0
