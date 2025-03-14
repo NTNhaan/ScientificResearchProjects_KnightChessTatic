@@ -21205,9 +21205,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attack: 10
-  health: 100
+  health: 1000
   lerpTimer: 0
-  maxHealth: 100
+  maxHealth: 1000
   chipSpeed: 2
   fontHealthBar: {fileID: 2029448903}
   backHealthBar: {fileID: 560046251}
@@ -47198,9 +47198,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attack: 10
-  health: 100
+  health: 1000
   lerpTimer: 0
-  maxHealth: 100
+  maxHealth: 1000
   chipSpeed: 2
   fontHealthBar: {fileID: 582692284}
   backHealthBar: {fileID: 2124779760}
@@ -47867,7 +47867,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1192997995}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 315af481a1945954c91f8206d5f4d8d9, type: 3}
   m_Name: 
@@ -58066,6 +58066,7 @@ GameObject:
   - component: {fileID: 2054068687}
   - component: {fileID: 2054068690}
   - component: {fileID: 2054068689}
+  - component: {fileID: 2054068691}
   m_Layer: 0
   m_Name: MLAgents_ENV
   m_TagString: Untagged
@@ -58095,7 +58096,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
+  m_Model: {fileID: 5022602860645237092, guid: fe9a6ac12b8cac34d8aa4570aaa9391b, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: Match3
@@ -58153,8 +58154,28 @@ MonoBehaviour:
   gameManager: {fileID: 1192998005}
   enemyCharacter: {fileID: 807103519}
   playerCharacter: {fileID: 330669426}
+  timeBar: {fileID: 1192998004}
+  scoreText: {fileID: 0}
+  episodeText: {fileID: 0}
+  averageRewardText: {fileID: 0}
   observationSize: 66
   branchSizes: 08000000080000000800000008000000
+--- !u!114 &2054068691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2054068686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88b6042bc9a5d4aa58d931eae49442e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentParameters:
+    maxStep: 0
+  hasUpgradedFromAgentParameters: 1
+  MaxStep: 0
 --- !u!1 &2062918728
 GameObject:
   m_ObjectHideFlags: 0

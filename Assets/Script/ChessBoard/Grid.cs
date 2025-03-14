@@ -116,27 +116,42 @@ public class Grid : MonoBehaviour
     }
     private IEnumerator CheckAndFill()
     {
-        while (true)
+        while (true) // Thay vì dùng timeout, chúng ta sẽ chạy liên tục
         {
-            yield return new WaitUntil(() => isFilling);
-            yield return StartCoroutine(Fill());
-            isFilling = false;
+            if (isFilling)
+            {
+                yield return StartCoroutine(Fill());
+            }
+            yield return new WaitForSeconds(0.1f); // Thêm delay nhỏ để tránh quá tải CPU
         }
     }
     public IEnumerator Fill()
     {
         bool needRefill = true;
         isFilling = true;
+
         while (needRefill && isFilling)
         {
             yield return new WaitForSeconds(FillTime);
-            while (FillStep())
+            // Thực hiện fill trong một frame
+            bool movedPiece = false;
+            do
             {
-                //_inverse = !_inverse;
-                yield return new WaitForSeconds(FillTime);
-            }
+                movedPiece = FillStep();
+                if (movedPiece)
+                {
+                    yield return new WaitForSeconds(FillTime);
+                }
+            } while (movedPiece);
+
+            // Kiểm tra và xóa matches
             needRefill = ClearAllValidMatches();
+
+            // Cho phép game update trạng thái
+            yield return null;
         }
+
+        isFilling = false;
     }
     public bool FillStep()
     {
@@ -232,41 +247,57 @@ public class Grid : MonoBehaviour
 
     public void SwapPiece(GamePieces piece1, GamePieces piece2)
     {
-        if (!piece1.IsMoveable() || !piece2.IsMoveable()) // chỉnh && thành ||
+        if (piece1 == null || piece2 == null)
         {
-            Debug.Log("One of the pieces is not moveable");
+            // Debug.LogError("SwapPiece: One of the pieces is null!");
             return;
         }
-        Debug.Log($"Swapping pieces: ({piece1.X}, {piece1.Y}) with ({piece2.X}, {piece2.Y})");
-        if (piece1 == null || piece2 == null ||
-            piece1.ItemComponent == null || piece2.ItemComponent == null)
+
+        if (piece1.MovableComponent == null || piece2.MovableComponent == null)
         {
-            Debug.LogError("Invalid pieces for swap");
+            // Debug.LogError("SwapPiece: MovableComponent is null!");
             return;
+        }
+
+        if (gameManager == null)
+        {
+            // Debug.LogError("SwapPiece: GameManager is null!");
+            gameManager = FindObjectOfType<GameManager>();
+            if (gameManager == null) return;
         }
 
         _pieces[piece1.X, piece1.Y] = piece2;
         _pieces[piece2.X, piece2.Y] = piece1;
-        // var match1 = GetMatch(piece1, piece2.X, piece2.Y);
-        // var match2 = GetMatch(piece2, piece1.X, piece1.Y);
+        var match1 = GetMatch(piece1, piece2.X, piece2.Y);
+        var match2 = GetMatch(piece2, piece1.X, piece1.Y);
         int piece1X = piece1.X;
         int piece1Y = piece1.Y;
         piece1.MovableComponent.Move(piece2.X, piece2.Y, FillTime);
         piece2.MovableComponent.Move(piece1X, piece1Y, FillTime);
 
+        // Add safety checks for timeswap
+        if (timeswap != null)
+        {
+            try
+            {
+                // Tắt đoạn này đi để training mô hình
+                if (timeswap.role == TimeBar.Role.Player)
+                {
+                    timeswap.Pause();
+                    timeswap.PlayAnimation("StartTurn");
+                }
+                else if (timeswap.role == TimeBar.Role.Demon)
+                {
+                    timeswap.Pause();
+                    timeswap.PlayAnimation("StartTurnBack");
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Error during timeswap animation: {e.Message}");
+            }
+        }
 
-        // ẩn đi timeswap khi thực hiện swap để train AI
-        // if (timeswap.role == TimeBar.Role.Player)
-        // {
-        //     timeswap.Pause();
-        //     // thực hiện animation của piece tạo thành match trước
-        //     timeswap.PlayAnimation("StartTurn");
-        // }
-        // else if (timeswap.role == TimeBar.Role.Demon)
-        // {
-        //     timeswap.Pause();
-        //     timeswap.PlayAnimation("StartTurnBack");
-        // }
         ClearAllValidMatches();
         StartCoroutine(Fill());
     }
@@ -321,11 +352,11 @@ public class Grid : MonoBehaviour
             if (horizontalPieces.Count >= 3)
             {
                 matchingPieces.AddRange(horizontalPieces);
-                // for (int i = 0; i < horizontalPieces.Count; i++)
-                // {
-                //     matchingPieces.Add(horizontalPieces[i]);
-                //     //Debug.Log("PieceTypeHorizontalList: " + horizontalPieces[i].ItemComponent.Item);
-                // }
+                for (int i = 0; i < horizontalPieces.Count; i++)
+                {
+                    matchingPieces.Add(horizontalPieces[i]);
+                    //Debug.Log("PieceTypeHorizontalList: " + horizontalPieces[i].ItemComponent.Item);
+                }
             }
 
             // Traverse vertically if we found a match (3 or more pieces)
@@ -352,10 +383,10 @@ public class Grid : MonoBehaviour
                         verticalPieces.Clear();
                     else
                     {
-                        // for (int j = 0; j < verticalPieces.Count; j++)
-                        // {
-                        //     matchingPieces.Add(verticalPieces[j]);
-                        // }
+                        for (int j = 0; j < verticalPieces.Count; j++)
+                        {
+                            matchingPieces.Add(verticalPieces[j]);
+                        }
                         matchingPieces.AddRange(verticalPieces);
                         break;
                     }
@@ -391,11 +422,11 @@ public class Grid : MonoBehaviour
             if (verticalPieces.Count >= 3)
             {
                 matchingPieces.AddRange(verticalPieces);
-                // for (int i = 0; i < verticalPieces.Count; i++)
-                // {
-                //     matchingPieces.Add(verticalPieces[i]);
-                //     //Debug.Log("PieceTypeVerticalList: " + verticalPieces[i].ItemComponent.Item);
-                // }
+                for (int i = 0; i < verticalPieces.Count; i++)
+                {
+                    matchingPieces.Add(verticalPieces[i]);
+                    //Debug.Log("PieceTypeVerticalList: " + verticalPieces[i].ItemComponent.Item);
+                }
             }
             // Traverse horizontal if we found a match (3 or more pieces)
             if (verticalPieces.Count >= 3)
@@ -421,10 +452,10 @@ public class Grid : MonoBehaviour
                         horizontalPieces.Clear();
                     else
                     {
-                        // for (int j = 0; j < horizontalPieces.Count; j++)
-                        // {
-                        //     matchingPieces.Add(horizontalPieces[j]);
-                        // }
+                        for (int j = 0; j < horizontalPieces.Count; j++)
+                        {
+                            matchingPieces.Add(horizontalPieces[j]);
+                        }
                         matchingPieces.AddRange(horizontalPieces);
                         break;
                     }
@@ -529,5 +560,52 @@ public class Grid : MonoBehaviour
                 }
             }
         }
+    }
+
+    public List<GamePieces> FindMatches()
+    {
+        List<GamePieces> matchingPieces = new List<GamePieces>();
+
+        // Check horizontal matches
+        for (int y = 0; y < yDim; y++)
+        {
+            for (int x = 0; x < xDim - 2; x++)
+            {
+                GamePieces piece1 = _pieces[x, y];
+                GamePieces piece2 = _pieces[x + 1, y];
+                GamePieces piece3 = _pieces[x + 2, y];
+
+                if (piece1 != null && piece2 != null && piece3 != null &&
+                    piece1.Type == piece2.Type && piece2.Type == piece3.Type &&
+                    piece1.Type != PieceType.EMPTY)
+                {
+                    if (!matchingPieces.Contains(piece1)) matchingPieces.Add(piece1);
+                    if (!matchingPieces.Contains(piece2)) matchingPieces.Add(piece2);
+                    if (!matchingPieces.Contains(piece3)) matchingPieces.Add(piece3);
+                }
+            }
+        }
+
+        // Check vertical matches
+        for (int x = 0; x < xDim; x++)
+        {
+            for (int y = 0; y < yDim - 2; y++)
+            {
+                GamePieces piece1 = _pieces[x, y];
+                GamePieces piece2 = _pieces[x, y + 1];
+                GamePieces piece3 = _pieces[x, y + 2];
+
+                if (piece1 != null && piece2 != null && piece3 != null &&
+                    piece1.Type == piece2.Type && piece2.Type == piece3.Type &&
+                    piece1.Type != PieceType.EMPTY)
+                {
+                    if (!matchingPieces.Contains(piece1)) matchingPieces.Add(piece1);
+                    if (!matchingPieces.Contains(piece2)) matchingPieces.Add(piece2);
+                    if (!matchingPieces.Contains(piece3)) matchingPieces.Add(piece3);
+                }
+            }
+        }
+
+        return matchingPieces;
     }
 }

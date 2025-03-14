@@ -9,13 +9,51 @@ public class GameManager : MonoBehaviour
     public HeroCharater player;
     [SerializeField] private TimeBar timeswap;
 
-    public int CurrentScore { get; private set; }
+    // Score and combo system
+    private int currentScore = 0;
+    private float comboMultiplier = 1f;
+    private float comboTimer = 0f;
+    private const float COMBO_DURATION = 2f;
+    private const float MAX_COMBO = 4f;
     public int RemainingMoves { get; private set; }
+
+    public float GetComboMultiplier()
+    {
+        return comboMultiplier;
+    }
+
+    public int GetCurrentScore()
+    {
+        return currentScore;
+    }
+
+    public void AddScore(int points)
+    {
+        currentScore += Mathf.RoundToInt(points * comboMultiplier);
+        comboMultiplier = Mathf.Min(comboMultiplier + 0.5f, MAX_COMBO);
+        comboTimer = COMBO_DURATION;
+    }
 
     void Awake()
     {
         timeswap = FindObjectOfType<TimeBar>();
+        comboMultiplier = 1f;
+        currentScore = 0;
     }
+
+    void Update()
+    {
+        // Update combo timer
+        if (comboTimer > 0)
+        {
+            comboTimer -= Time.deltaTime;
+            if (comboTimer <= 0)
+            {
+                comboMultiplier = 1f;
+            }
+        }
+    }
+
     void Start()
     {
         itemBehaviors = new Dictionary<ItemPieces.ItemType, System.Action<GamePieces>>
@@ -40,20 +78,19 @@ public class GameManager : MonoBehaviour
                     enemy.RestoreHealth(5);
                 }
             } }
-
         };
     }
 
     public void HandleItemBehaviour(GamePieces piece)
     {
-        // if (itemBehaviors.ContainsKey(piece.ItemComponent.Item))
-        // {
-        //     itemBehaviors[piece.ItemComponent.Item].Invoke(piece);
-        // }
-        // else
-        // {
-        //     Debug.Log("No item behavior found for " + piece.ItemComponent.Item);
-        // }
+        if (itemBehaviors.ContainsKey(piece.ItemComponent.Item))
+        {
+            itemBehaviors[piece.ItemComponent.Item].Invoke(piece);
+        }
+        else
+        {
+            // Debug.Log("No item behavior found for " + piece.ItemComponent.Item);
+        }
         switch (piece.ItemComponent.Item)
         {
             case ItemPieces.ItemType.Apple:
@@ -81,7 +118,7 @@ public class GameManager : MonoBehaviour
                 // Handle Mushroom behavior
                 break;
             default:
-                Debug.LogError($"No item behavior found for {piece.ItemComponent.Item}");
+                // Debug.LogError($"No item behavior found for {piece.ItemComponent.Item}");
                 break;
         }
     }

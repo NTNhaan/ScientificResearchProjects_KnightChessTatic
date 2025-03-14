@@ -1,0 +1,29 @@
+{
+    "Match3": {
+        "checkpoints": [
+            {
+                "steps": 704,
+                "file_path": "results\\Test6\\Match3\\Match3-704.onnx",
+                "reward": null,
+                "creation_time": 1741809314.4124503,
+                "auxillary_file_paths": [
+                    "results\\Test6\\Match3\\Match3-704.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 704,
+            "file_path": "results\\Test6\\Match3.onnx",
+            "reward": null,
+            "creation_time": 1741809314.4124503,
+            "auxillary_file_paths": [
+                "results\\Test6\\Match3\\Match3-704.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.30.0",
+        "torch_version": "2.5.1+cpu"
+    }
+}

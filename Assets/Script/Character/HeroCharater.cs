@@ -20,7 +20,7 @@ public class HeroCharater : Character
             {
                 stateInfo = animator.GetCurrentAnimatorStateInfo(0);
             }
-            atm.TakeHit(attack);
+            atm.TakeHit(atm.attack);
         }
     }
     private void EndAnimation(Animator animator)
