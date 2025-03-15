@@ -57,6 +57,7 @@ public class Grid : MonoBehaviour
         isFilling = value;
     }
 
+    private bool hasEnemySwapped = false;
 
     public void Awake()
     {
@@ -245,25 +246,42 @@ public class Grid : MonoBehaviour
             (piece1.Y == piece2.Y && Mathf.Abs(piece1.X - piece2.X) == 1);
     }
 
-    public void SwapPiece(GamePieces piece1, GamePieces piece2)
+    public void SwapPiece(GamePieces piece1, GamePieces piece2, bool isManualSwap = false)
     {
         if (piece1 == null || piece2 == null)
         {
-            // Debug.LogError("SwapPiece: One of the pieces is null!");
             return;
         }
 
         if (piece1.MovableComponent == null || piece2.MovableComponent == null)
         {
-            // Debug.LogError("SwapPiece: MovableComponent is null!");
             return;
         }
 
         if (gameManager == null)
         {
-            // Debug.LogError("SwapPiece: GameManager is null!");
             gameManager = FindObjectOfType<GameManager>();
             if (gameManager == null) return;
+        }
+
+        // Check if it's the enemy's turn and if they've already swapped
+        if (timeswap != null && timeswap.role == TimeBar.Role.Demon)
+        {
+            if (hasEnemySwapped)
+            {
+                Debug.Log("Enemy has already swapped this turn");
+                return;
+            }
+        }
+        // If it's player's turn, only allow manual swaps
+        else if (timeswap != null && timeswap.role == TimeBar.Role.Player)
+        {
+            // Player can only swap manually, not through AI
+            if (!isManualSwap)
+            {
+                Debug.Log("Player can only swap manually");
+                return;
+            }
         }
 
         _pieces[piece1.X, piece1.Y] = piece2;
@@ -280,7 +298,6 @@ public class Grid : MonoBehaviour
         {
             try
             {
-                // Tắt đoạn này đi để training mô hình
                 if (timeswap.role == TimeBar.Role.Player)
                 {
                     timeswap.Pause();
@@ -290,6 +307,7 @@ public class Grid : MonoBehaviour
                 {
                     timeswap.Pause();
                     timeswap.PlayAnimation("StartTurnBack");
+                    hasEnemySwapped = true;
                 }
             }
             catch (System.Exception e)
@@ -300,6 +318,11 @@ public class Grid : MonoBehaviour
 
         ClearAllValidMatches();
         StartCoroutine(Fill());
+    }
+
+    public void ResetEnemySwapState()
+    {
+        hasEnemySwapped = false;
     }
 
     IEnumerator SwapPiecesBack(GamePieces piece1, GamePieces piece2, float delay)
@@ -556,7 +579,7 @@ public class Grid : MonoBehaviour
                 if (IsAdjacent(pressedPiece, enteredPiece))
                 {
                     Debug.Log("IsAdjacent is true =))");
-                    SwapPiece(pressedPiece, enteredPiece);
+                    SwapPiece(pressedPiece, enteredPiece, true);
                 }
             }
         }

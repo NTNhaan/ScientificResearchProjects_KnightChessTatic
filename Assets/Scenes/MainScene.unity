@@ -58132,7 +58132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DecisionPeriod: 1
+  DecisionPeriod: 5
   TakeActionsBetweenDecisions: 1
 --- !u!114 &2054068690
 MonoBehaviour:
@@ -58160,6 +58160,9 @@ MonoBehaviour:
   averageRewardText: {fileID: 0}
   observationSize: 66
   branchSizes: 08000000080000000800000008000000
+  isTrainingMode: 0
+  trainingMoveInterval: 0.05
+  normalMoveInterval: 1
 --- !u!114 &2054068691
 MonoBehaviour:
   m_ObjectHideFlags: 0

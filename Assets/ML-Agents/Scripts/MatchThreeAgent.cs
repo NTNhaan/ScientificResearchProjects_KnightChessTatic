@@ -25,6 +25,11 @@ public class MatchThreeAgent : Agent
     [SerializeField] private int observationSize;
     [SerializeField] private int[] branchSizes;
 
+    [Header("Training Optimizations")]
+    [SerializeField] private bool isTrainingMode = false;
+    [SerializeField] private float trainingMoveInterval = 0.05f;
+    [SerializeField] private float normalMoveInterval = 1f;
+
     private bool isWaitingForMove = false;
     private float previousEnemyHealth;
     private float previousPlayerHealth;
@@ -97,6 +102,9 @@ public class MatchThreeAgent : Agent
         // Calculate specs
         CalculateSpecs();
 
+        // Set training optimizations
+        SetTrainingOptimizations();
+
         // Debug.Log($"Grid dimensions: {gameGrid.xDim}x{gameGrid.yDim}");
         // Debug.Log($"Observation Size: {observationSize}");
         // Debug.Log($"Branch Sizes: [{string.Join(", ", branchSizes)}]");
@@ -123,48 +131,44 @@ public class MatchThreeAgent : Agent
         // Debug.Log($"Expected observations: {(gameGrid.xDim * gameGrid.yDim * 4) + 3}");
     }
 
-    void Update()
+    private void Update()
     {
-        // Check if it's enemy's turn
-        if (timeBar != null && timeBar.role == TimeBar.Role.Demon && !hasEnemySwapped && !isEnemyThinking)
+        if (timeBar != null)
         {
-            isEnemyTurn = true;
-            StartCoroutine(EnemyTurn());
-        }
-        else if (timeBar != null && timeBar.role == TimeBar.Role.Player)
-        {
-            isEnemyTurn = false;
-            hasEnemySwapped = false;
-        }
-
-        // Original player turn logic
-        if (!isWaitingForMove && !isEnemyTurn)
-        {
-            autoPlayTimer += Time.deltaTime;
-            if (autoPlayTimer >= AUTO_PLAY_INTERVAL)
+            // Reset enemy swap state when switching to player's turn
+            if (timeBar.role == TimeBar.Role.Player)
             {
-                autoPlayTimer = 0f;
-                RequestDecision();
+                isEnemyTurn = false;
+                gameGrid.ResetEnemySwapState();
+                // Disable AI processing during player's turn
+                isWaitingForMove = true; // Prevent AI from making moves
+            }
+            // Enable AI and handle enemy's turn
+            else if (timeBar.role == TimeBar.Role.Demon)
+            {
+                isWaitingForMove = false; // Allow AI to make moves
+                if (!isEnemyTurn && !isEnemyThinking)
+                {
+                    StartCoroutine(EnemyTurn());
+                }
             }
         }
     }
 
     private IEnumerator EnemyTurn()
     {
+        isEnemyTurn = true;
         isEnemyThinking = true;
-        yield return new WaitForSeconds(0.5f); // Small delay to make it feel more natural
+
+        // Add a small delay for more natural feel
+        yield return new WaitForSeconds(0.5f);
 
         // Request decision from the trained model
         RequestDecision();
 
-        // Wait for the decision to be processed
-        while (isWaitingForMove)
-        {
-            yield return null;
-        }
+        // Wait for the decision to be made
+        yield return new WaitForSeconds(0.1f);
 
-        hasEnemySwapped = true;
-        isEnemyTurn = false;
         isEnemyThinking = false;
     }
 
@@ -365,7 +369,8 @@ public class MatchThreeAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        if (isWaitingForMove) return;
+        // Only process AI actions during enemy's turn
+        if (isWaitingForMove || timeBar.role != TimeBar.Role.Demon) return;
 
         // Get discrete actions
         int sourceX = Mathf.Clamp(actions.DiscreteActions[0], 0, gameGrid.xDim - 1);
@@ -446,13 +451,13 @@ public class MatchThreeAgent : Agent
         gameGrid.SwapPiece(sourcePiece, targetPiece);
 
         float timeout = 0f;
-        const float maxTimeout = 2f; // Giảm thời gian timeout
-        const float checkInterval = 0.05f; // Giảm interval
+        float maxTimeout = isTrainingMode ? 1f : 2f;
+        float checkInterval = isTrainingMode ? 0.02f : 0.05f;
 
         while (gameGrid.isFilling && timeout < maxTimeout)
         {
             timeout += checkInterval;
-            yield return WaitTime; // Sử dụng WaitTime đã cache
+            yield return new WaitForSeconds(checkInterval);
         }
 
         if (timeout >= maxTimeout)
@@ -461,14 +466,71 @@ public class MatchThreeAgent : Agent
             Debug.LogWarning("Fill operation timed out");
         }
 
-        // Process matches
-        ProcessMatches(initialScore, hadInitialMatches);
-
-        // Process combat
-        ProcessCombat();
+        // Process matches and combat
+        if (isTrainingMode)
+        {
+            ProcessMatchesQuick(initialScore, hadInitialMatches);
+            ProcessCombatQuick();
+        }
+        else
+        {
+            ProcessMatches(initialScore, hadInitialMatches);
+            ProcessCombat();
+        }
 
         isWaitingForMove = false;
-        UpdateUI();
+        if (!isTrainingMode)
+        {
+            UpdateUI();
+        }
+    }
+
+    private void ProcessMatchesQuick(int initialScore, bool hadInitialMatches)
+    {
+        int finalScore = gameManager.GetCurrentScore();
+        int scoreDelta = finalScore - initialScore;
+        List<GamePieces> finalMatches = gameGrid.FindMatches();
+
+        if (finalMatches != null && finalMatches.Count > 0)
+        {
+            successfulMoves++;
+            totalMatches += finalMatches.Count;
+            float matchReward = CalculateMatchReward(finalMatches, scoreDelta);
+            AddReward(matchReward);
+            episodeReward += matchReward;
+            totalReward += matchReward;
+        }
+        else if (!hadInitialMatches)
+        {
+            ApplyNoMatchPenalty();
+        }
+    }
+
+    private void ProcessCombatQuick()
+    {
+        float enemyHealthDelta = previousEnemyHealth - enemyCharacter.health;
+        float playerHealthDelta = previousPlayerHealth - playerCharacter.health;
+
+        previousEnemyHealth = enemyCharacter.health;
+        previousPlayerHealth = playerCharacter.health;
+
+        if (enemyHealthDelta > 0)
+        {
+            averageDamagePerMove = (averageDamagePerMove * totalMoves + enemyHealthDelta) / (totalMoves + 1);
+            AddReward(1.5f * enemyHealthDelta / enemyCharacter.maxHealth);
+        }
+
+        if (playerHealthDelta > 0)
+        {
+            AddReward(-0.5f * playerHealthDelta / playerCharacter.maxHealth);
+        }
+
+        if (enemyHealthDelta < 0)
+        {
+            AddReward(0.8f * -enemyHealthDelta / enemyCharacter.maxHealth);
+        }
+
+        CheckGameEnd();
     }
 
     private void ProcessMatches(int initialScore, bool hadInitialMatches)
@@ -697,5 +759,22 @@ public class MatchThreeAgent : Agent
         enableMoveLog = moves;
         enableRewardLog = rewards;
         enableEpisodeLog = episodes;
+    }
+
+    private void SetTrainingOptimizations()
+    {
+        // Disable unnecessary features during training
+        if (isTrainingMode)
+        {
+            enableDetailedLogs = false;
+            enableMoveLog = false;
+            enableRewardLog = false;
+            enableEpisodeLog = false;
+
+            // Disable UI updates
+            if (scoreText != null) scoreText.gameObject.SetActive(false);
+            if (episodeText != null) episodeText.gameObject.SetActive(false);
+            if (averageRewardText != null) averageRewardText.gameObject.SetActive(false);
+        }
     }
 }
