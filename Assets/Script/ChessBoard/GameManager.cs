@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviour
                 // Handle Mushroom behavior
                 break;
             default:
-                // Debug.LogError($"No item behavior found for {piece.ItemComponent.Item}");
+                Debug.LogError($"No item behavior found for {piece.ItemComponent.Item}");
                 break;
         }
     }

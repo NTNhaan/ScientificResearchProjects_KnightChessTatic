@@ -188,38 +188,76 @@ public class Grid : MonoBehaviour
                 Destroy(pieceBelow.gameObject);
                 GameObject newPiece = (GameObject)Instantiate(_piecePrefabDict[PieceType.NORMAL], GetWorldPosition(x, -1, 0), Quaternion.identity);
                 newPiece.transform.parent = transform;
-                // cập nhật thông tin của gamepiece cho prefab piece mới
+
                 _pieces[x, 0] = newPiece.GetComponent<GamePieces>();
                 _pieces[x, 0].Init(x, -1, this, PieceType.NORMAL);
                 _pieces[x, 0].MovableComponent.Move(x, 0, FillTime);
-                // int randomIndex = UnityEngine.Random.Range(0, _pieces[x, 0].ItemComponent.NumItems);
-                ItemPieces.ItemType randomIndex = GetRandomItemType();
-                _pieces[x, 0].ItemComponent.SetItem(randomIndex);
+
+                // Lấy danh sách các item type không tạo match
+                ItemPieces.ItemType newType = GetNonMatchingItemType(x, 0);
+                _pieces[x, 0].ItemComponent.SetItem(newType);
                 movedPiece = true;
             }
         }
         return movedPiece;
     }
-    private ItemPieces.ItemType GetRandomItemType()
+    private ItemPieces.ItemType GetNonMatchingItemType(int x, int y)
     {
-        float totalWeight = 0;
-        foreach (var weight in _itemWeights.Values)
+        List<ItemPieces.ItemType> availableTypes = new List<ItemPieces.ItemType>(_itemWeights.Keys);
+        List<ItemPieces.ItemType> invalidTypes = new List<ItemPieces.ItemType>();
+
+        // Kiểm tra match ngang
+        if (x >= 2)
         {
-            totalWeight += weight;
+            if (_pieces[x - 1, y].IsItemed() && _pieces[x - 2, y].IsItemed() &&
+                _pieces[x - 1, y].ItemComponent.Item == _pieces[x - 2, y].ItemComponent.Item)
+            {
+                invalidTypes.Add(_pieces[x - 1, y].ItemComponent.Item);
+            }
+        }
+
+        // Kiểm tra match dọc
+        if (y >= 2)
+        {
+            if (_pieces[x, y - 1].IsItemed() && _pieces[x, y - 2].IsItemed() &&
+                _pieces[x, y - 1].ItemComponent.Item == _pieces[x, y - 2].ItemComponent.Item)
+            {
+                invalidTypes.Add(_pieces[x, y - 1].ItemComponent.Item);
+            }
+        }
+
+        // Loại bỏ các type không hợp lệ
+        foreach (var invalidType in invalidTypes)
+        {
+            availableTypes.Remove(invalidType);
+        }
+
+        // Nếu không còn type hợp lệ, sử dụng tất cả các type
+        if (availableTypes.Count == 0)
+        {
+            availableTypes = new List<ItemPieces.ItemType>(_itemWeights.Keys);
+        }
+
+        // Chọn ngẫu nhiên từ các type còn lại dựa trên trọng số
+        float totalWeight = 0;
+        foreach (var type in availableTypes)
+        {
+            totalWeight += _itemWeights[type];
         }
 
         float randomValue = UnityEngine.Random.Range(0, totalWeight);
-        float cumulativeWeight = 0;
+        float currentWeight = 0;
 
-        foreach (var kvp in _itemWeights)
+        foreach (var type in availableTypes)
         {
-            cumulativeWeight += kvp.Value;
-            if (randomValue < cumulativeWeight)
+            currentWeight += _itemWeights[type];
+            if (randomValue <= currentWeight)
             {
-                return kvp.Key;
+                return type;
             }
         }
-        return ItemPieces.ItemType.Sword;
+
+        return availableTypes[0];
     }
     public GamePieces SpawnNewPiece(int x, int y, PieceType type)
     { // Tạo mảnh ghép mới tại vị trí xác định
