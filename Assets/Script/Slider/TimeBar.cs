@@ -67,7 +67,7 @@ public class TimeBar : MonoBehaviour
             TimeSliderHero.value -= Time.deltaTime * 10;
             if (TimeSliderHero.value <= 0)
             {
-                SwapTurn.Instance.StartSwap();
+                SwapTurn.Instance.StartSwap();  // kích hoạt điều kiện swap star
                 PlayAnimation("StartTurn");
             }
         }

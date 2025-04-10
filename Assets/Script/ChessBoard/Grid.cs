@@ -39,7 +39,7 @@ public class Grid : MonoBehaviour
     private Dictionary<PieceType, GameObject> _piecePrefabDict;
     private Dictionary<ItemPieces.ItemType, float> _itemWeights;
     public GamePieces[,] _pieces;
-    private bool _inverse;
+    private bool _inverse;  
 
     public Vector2[,] backgroundPositions;
 

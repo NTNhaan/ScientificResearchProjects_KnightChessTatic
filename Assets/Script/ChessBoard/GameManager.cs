@@ -5,8 +5,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     private Dictionary<ItemPieces.ItemType, System.Action<GamePieces>> itemBehaviors;
-    public EnemyCharacter enemy;
-    public HeroCharater player;
+    [SerializeField] private EnemyCharacter enemy;
+    [SerializeField] private HeroCharater player;
     [SerializeField] private TimeBar timeswap;
 
     // Score and combo system
@@ -36,7 +36,16 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
-        timeswap = FindObjectOfType<TimeBar>();
+        // Khởi tạo các tham chiếu nếu chưa được gán trong Inspector
+        if (timeswap == null)
+            timeswap = FindObjectOfType<TimeBar>();
+
+        if (enemy == null)
+            enemy = FindObjectOfType<EnemyCharacter>();
+
+        if (player == null)
+            player = FindObjectOfType<HeroCharater>();
+
         comboMultiplier = 1f;
         currentScore = 0;
     }
@@ -56,16 +65,23 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        // Kiểm tra xem các tham chiếu đã được khởi tạo chưa
+        if (enemy == null || player == null || timeswap == null)
+        {
+            Debug.LogError("GameManager: Các tham chiếu quan trọng chưa được khởi tạo!");
+            return;
+        }
+
         itemBehaviors = new Dictionary<ItemPieces.ItemType, System.Action<GamePieces>>
         {
             {ItemPieces.ItemType.Sword, (GamePieces piece) => {
                 if(timeswap.role == TimeBar.Role.Player)
                 {
-                    player.Attack(enemy);
+                    player.PerformAttack(enemy);
                 }
                 else
                 {
-                    enemy.Attack(player);
+                    enemy.PerformAttack(player);
                 }
             } },
             {ItemPieces.ItemType.Apple, (GamePieces piece) => {
@@ -83,6 +99,13 @@ public class GameManager : MonoBehaviour
 
     public void HandleItemBehaviour(GamePieces piece)
     {
+        // Kiểm tra null trước khi sử dụng
+        if (piece == null || piece.ItemComponent == null)
+        {
+            Debug.LogError("GameManager: GamePieces hoặc ItemComponent là null!");
+            return;
+        }
+
         if (itemBehaviors.ContainsKey(piece.ItemComponent.Item))
         {
             itemBehaviors[piece.ItemComponent.Item].Invoke(piece);
