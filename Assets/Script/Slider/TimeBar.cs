@@ -18,6 +18,8 @@ public class TimeBar : MonoBehaviour
     public Role role;
     public Animator animator;
     private bool isPaused = false;
+    private bool hasPlayedWarning = false;
+    private const float WARNING_THRESHOLD = 30f;
     public void Awake()
     {
         if (Instance == null)
@@ -42,12 +44,14 @@ public class TimeBar : MonoBehaviour
             isPaused = false;
             role = Role.Demon;
             TimeSliderHero.value = MaxTime;
+            hasPlayedWarning = false;
         }
         else if (role == Role.Demon)
         {
             isPaused = false;
             role = Role.Player;
             TimeSliderDemon.value = MaxTime;
+            hasPlayedWarning = false;
         }
     }
     public void ResetAnimation()
@@ -65,17 +69,37 @@ public class TimeBar : MonoBehaviour
         if (role == Role.Player && !isPaused)
         {
             TimeSliderHero.value -= Time.deltaTime * 10;
+
+            // Kiểm tra và phát âm thanh cảnh báo
+            if (TimeSliderHero.value <= WARNING_THRESHOLD && !hasPlayedWarning)
+            {// nếu slider dưới 30s thì bật timeleftstate
+                AudioManager.Instance.ChangeState(new TimeLeftState());
+                hasPlayedWarning = true;
+            }
+
             if (TimeSliderHero.value <= 0)
             {
-                SwapTurn.Instance.StartSwap();  // kích hoạt điều kiện swap star
+                // Dừng âm thanh cảnh báo khi slider về 0
+                AudioManager.Instance.Stop("TimeWarning");
+                SwapTurn.Instance.StartSwap();
                 PlayAnimation("StartTurn");
             }
         }
         if (role == Role.Demon && !isPaused)
         {
             TimeSliderDemon.value -= Time.deltaTime * 10;
+
+            // Kiểm tra và phát âm thanh cảnh báo
+            if (TimeSliderDemon.value <= WARNING_THRESHOLD && !hasPlayedWarning)
+            {
+                AudioManager.Instance.ChangeState(new TimeLeftState());
+                hasPlayedWarning = true;
+            }
+
             if (TimeSliderDemon.value <= 0)
             {
+                // Dừng âm thanh cảnh báo khi slider về 0
+                AudioManager.Instance.Stop("TimeWarning");
                 SwapTurn.Instance.StartSwap();
                 PlayAnimation("StartTurnBack");
             }

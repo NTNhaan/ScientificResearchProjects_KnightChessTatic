@@ -4,7 +4,19 @@ public class IdleState : ICharacterState
 {
     public void Enter(Character character)
     {
-        character.GetComponent<Animator>().SetTrigger("Idle");
+        Animator animator = character.GetComponent<Animator>();
+        if (animator != null && animator.runtimeAnimatorController != null)
+        {
+            // Kiểm tra xem parameter có tồn tại không
+            foreach (AnimatorControllerParameter param in animator.parameters)
+            {
+                if (param.name == "Idle")
+                {
+                    animator.SetTrigger("Idle");
+                    break;
+                }
+            }
+        }
     }
 
     public void Update(Character character)

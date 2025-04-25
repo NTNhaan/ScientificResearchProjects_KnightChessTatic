@@ -19,12 +19,20 @@ public abstract class Character : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         health = maxHealth;
-        ChangeState(new IdleState());
+
+        // Khởi tạo state mặc định
+        if (currentState == null)
+        {
+            ChangeState(new IdleState());
+        }
     }
 
     public void Update()
     {
-        currentState.Update(this);
+        if (currentState != null)
+        {
+            currentState.Update(this);
+        }
         UpdateHealthUI();
     }
 

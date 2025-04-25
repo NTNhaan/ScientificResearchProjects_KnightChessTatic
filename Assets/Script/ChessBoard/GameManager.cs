@@ -93,6 +93,16 @@ public class GameManager : MonoBehaviour
                 {
                     enemy.RestoreHealth(5);
                 }
+            } },
+            {ItemPieces.ItemType.Heart, (GamePieces piece) => {
+                if(timeswap.role == TimeBar.Role.Player)
+                {
+                    player.RestoreHealth(player.maxHealth);
+                }
+                else
+                {
+                    enemy.RestoreHealth(enemy.maxHealth);
+                }
             } }
         };
     }

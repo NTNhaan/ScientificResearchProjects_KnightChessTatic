@@ -39,7 +39,7 @@ public class Grid : MonoBehaviour
     private Dictionary<PieceType, GameObject> _piecePrefabDict;
     private Dictionary<ItemPieces.ItemType, float> _itemWeights;
     public GamePieces[,] _pieces;
-    private bool _inverse;  
+    private bool _inverse;
 
     public Vector2[,] backgroundPositions;
 
@@ -114,6 +114,7 @@ public class Grid : MonoBehaviour
             }
         }
         StartCoroutine(CheckAndFill());
+        AudioManager.Instance.PlayBackgroundMusic("PuzzleSound");
     }
     private IEnumerator CheckAndFill()
     {
@@ -331,6 +332,7 @@ public class Grid : MonoBehaviour
         piece1.MovableComponent.Move(piece2.X, piece2.Y, FillTime);
         piece2.MovableComponent.Move(piece1X, piece1Y, FillTime);
 
+        AudioManager.Instance.ChangeState(new SwitchPieceState());
         // Add safety checks for timeswap
         if (timeswap != null)
         {
@@ -563,7 +565,7 @@ public class Grid : MonoBehaviour
         {
             _pieces[x, y].ClearableComponent.Clear();
             SpawnNewPiece(x, y, PieceType.EMPTY);
-
+            AudioManager.Instance.ChangeState(new MatchPieceState());
             return true;
         }
         return false;
