@@ -847,6 +847,7 @@ Transform:
   - {fileID: 1111531779}
   - {fileID: 535885827}
   - {fileID: 1471496102}
+  - {fileID: 822048114}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1425,6 +1426,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 119996341}
   m_CullTransparentMesh: 1
+--- !u!1001 &148864076
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 60306500}
+    m_Modifications:
+    - target: {fileID: 8856900932228489175, guid: b8ea2188e526a1f4990dcb7651597437, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856900932228489175, guid: b8ea2188e526a1f4990dcb7651597437, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.79566604
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856900932228489175, guid: b8ea2188e526a1f4990dcb7651597437, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.7471685
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856900932228489175, guid: b8ea2188e526a1f4990dcb7651597437, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -12.3140135
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856900932228489175, guid: b8ea2188e526a1f4990dcb7651597437, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856900932228489175, guid: b8ea2188e526a1f4990dcb7651597437, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856900932228489175, guid: b8ea2188e526a1f4990dcb7651597437, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856900932228489175, guid: b8ea2188e526a1f4990dcb7651597437, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856900932228489175, guid: b8ea2188e526a1f4990dcb7651597437, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856900932228489175, guid: b8ea2188e526a1f4990dcb7651597437, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856900932228489175, guid: b8ea2188e526a1f4990dcb7651597437, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8856900932228489177, guid: b8ea2188e526a1f4990dcb7651597437, type: 3}
+      propertyPath: m_Name
+      value: AudioManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b8ea2188e526a1f4990dcb7651597437, type: 3}
 --- !u!1 &194958007
 GameObject:
   m_ObjectHideFlags: 0
@@ -4166,8 +4224,8 @@ MonoBehaviour:
   buttonImage: {fileID: 445978053}
   defaultBT: {fileID: 21300000, guid: df989cf1969c6a341a3db9525c3da908, type: 3}
   pressBT: {fileID: 21300000, guid: 02fc5b525c21d8442aa991761c2a6016, type: 3}
-  compressClip: {fileID: 8300000, guid: 80499ae34b5f34b4fa6dee05b78b67fe, type: 3}
-  uncompessClip: {fileID: 8300000, guid: 7f4f3935aa7aefc468a128d4fd0fe2d9, type: 3}
+  compressClip: {fileID: 8300000, guid: 87257fc5171563941b99d727765862aa, type: 3}
+  uncompessClip: {fileID: 8300000, guid: 24f853023afdfc74584f01e5b5ef3c4c, type: 3}
   audioSource: {fileID: 445978057}
 --- !u!82 &445978057
 AudioSource:
@@ -5059,8 +5117,8 @@ MonoBehaviour:
   buttonImage: {fileID: 487723691}
   defaultBT: {fileID: 21300000, guid: d4c138c7c6258f247b530a4bcf4a26d6, type: 3}
   pressBT: {fileID: 21300000, guid: 503da560a4df9c14482224c7e5fcb261, type: 3}
-  compressClip: {fileID: 8300000, guid: 80499ae34b5f34b4fa6dee05b78b67fe, type: 3}
-  uncompessClip: {fileID: 8300000, guid: 7f4f3935aa7aefc468a128d4fd0fe2d9, type: 3}
+  compressClip: {fileID: 8300000, guid: 87257fc5171563941b99d727765862aa, type: 3}
+  uncompessClip: {fileID: 8300000, guid: 24f853023afdfc74584f01e5b5ef3c4c, type: 3}
   audioSource: {fileID: 487723688}
 --- !u!114 &487723690
 MonoBehaviour:
@@ -7622,8 +7680,8 @@ MonoBehaviour:
   buttonImage: {fileID: 661101095}
   defaultBT: {fileID: 21300000, guid: e85956f73296037469196471bb19de8d, type: 3}
   pressBT: {fileID: 21300000, guid: 0bdf19081edee6843aa0193e7696a7bc, type: 3}
-  compressClip: {fileID: 8300000, guid: 80499ae34b5f34b4fa6dee05b78b67fe, type: 3}
-  uncompessClip: {fileID: 8300000, guid: 7f4f3935aa7aefc468a128d4fd0fe2d9, type: 3}
+  compressClip: {fileID: 8300000, guid: 87257fc5171563941b99d727765862aa, type: 3}
+  uncompessClip: {fileID: 8300000, guid: 24f853023afdfc74584f01e5b5ef3c4c, type: 3}
   audioSource: {fileID: 661101092}
 --- !u!114 &661101094
 MonoBehaviour:
@@ -7959,8 +8017,8 @@ MonoBehaviour:
   buttonImage: {fileID: 669485962}
   defaultBT: {fileID: 21300000, guid: 71b23a71d2baad847803c1127f97c5ac, type: 3}
   pressBT: {fileID: 21300000, guid: 62234750cd5d00f43b534fd7ee49ab03, type: 3}
-  compressClip: {fileID: 8300000, guid: 80499ae34b5f34b4fa6dee05b78b67fe, type: 3}
-  uncompessClip: {fileID: 8300000, guid: 7f4f3935aa7aefc468a128d4fd0fe2d9, type: 3}
+  compressClip: {fileID: 8300000, guid: 87257fc5171563941b99d727765862aa, type: 3}
+  uncompessClip: {fileID: 8300000, guid: 24f853023afdfc74584f01e5b5ef3c4c, type: 3}
   audioSource: {fileID: 669485959}
 --- !u!114 &669485961
 MonoBehaviour:
@@ -10177,8 +10235,8 @@ MonoBehaviour:
   buttonImage: {fileID: 785075781}
   defaultBT: {fileID: 21300000, guid: e85956f73296037469196471bb19de8d, type: 3}
   pressBT: {fileID: 21300000, guid: 0bdf19081edee6843aa0193e7696a7bc, type: 3}
-  compressClip: {fileID: 8300000, guid: 80499ae34b5f34b4fa6dee05b78b67fe, type: 3}
-  uncompessClip: {fileID: 8300000, guid: 7f4f3935aa7aefc468a128d4fd0fe2d9, type: 3}
+  compressClip: {fileID: 8300000, guid: 87257fc5171563941b99d727765862aa, type: 3}
+  uncompessClip: {fileID: 8300000, guid: 24f853023afdfc74584f01e5b5ef3c4c, type: 3}
   audioSource: {fileID: 785075778}
 --- !u!114 &785075780
 MonoBehaviour:
@@ -10869,6 +10927,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 815199771}
   m_CullTransparentMesh: 1
+--- !u!4 &822048114 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8856900932228489175, guid: b8ea2188e526a1f4990dcb7651597437, type: 3}
+  m_PrefabInstance: {fileID: 148864076}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &825706378
 GameObject:
   m_ObjectHideFlags: 0
@@ -12745,8 +12808,8 @@ MonoBehaviour:
   buttonImage: {fileID: 1009198858}
   defaultBT: {fileID: 21300000, guid: e85956f73296037469196471bb19de8d, type: 3}
   pressBT: {fileID: 21300000, guid: 0bdf19081edee6843aa0193e7696a7bc, type: 3}
-  compressClip: {fileID: 8300000, guid: 80499ae34b5f34b4fa6dee05b78b67fe, type: 3}
-  uncompessClip: {fileID: 8300000, guid: 7f4f3935aa7aefc468a128d4fd0fe2d9, type: 3}
+  compressClip: {fileID: 8300000, guid: 87257fc5171563941b99d727765862aa, type: 3}
+  uncompessClip: {fileID: 8300000, guid: 24f853023afdfc74584f01e5b5ef3c4c, type: 3}
   audioSource: {fileID: 1009198855}
 --- !u!114 &1009198857
 MonoBehaviour:
@@ -16486,8 +16549,8 @@ MonoBehaviour:
   buttonImage: {fileID: 1204901334}
   defaultBT: {fileID: 21300000, guid: e85956f73296037469196471bb19de8d, type: 3}
   pressBT: {fileID: 21300000, guid: 0bdf19081edee6843aa0193e7696a7bc, type: 3}
-  compressClip: {fileID: 8300000, guid: 80499ae34b5f34b4fa6dee05b78b67fe, type: 3}
-  uncompessClip: {fileID: 8300000, guid: 7f4f3935aa7aefc468a128d4fd0fe2d9, type: 3}
+  compressClip: {fileID: 8300000, guid: 87257fc5171563941b99d727765862aa, type: 3}
+  uncompessClip: {fileID: 8300000, guid: 24f853023afdfc74584f01e5b5ef3c4c, type: 3}
   audioSource: {fileID: 1204901331}
 --- !u!114 &1204901333
 MonoBehaviour:
@@ -17276,8 +17339,8 @@ MonoBehaviour:
   buttonImage: {fileID: 1263588918}
   defaultBT: {fileID: 21300000, guid: 444cb3d553d4bbd4a991715ee9e66a28, type: 3}
   pressBT: {fileID: 21300000, guid: f7856a4650f98c24b806dcf1524f8809, type: 3}
-  compressClip: {fileID: 8300000, guid: 80499ae34b5f34b4fa6dee05b78b67fe, type: 3}
-  uncompessClip: {fileID: 8300000, guid: 7f4f3935aa7aefc468a128d4fd0fe2d9, type: 3}
+  compressClip: {fileID: 8300000, guid: 87257fc5171563941b99d727765862aa, type: 3}
+  uncompessClip: {fileID: 8300000, guid: 24f853023afdfc74584f01e5b5ef3c4c, type: 3}
   audioSource: {fileID: 1263588915}
 --- !u!114 &1263588917
 MonoBehaviour:
@@ -21564,8 +21627,8 @@ MonoBehaviour:
   buttonImage: {fileID: 1508441412}
   defaultBT: {fileID: 21300000, guid: e85956f73296037469196471bb19de8d, type: 3}
   pressBT: {fileID: 21300000, guid: 0bdf19081edee6843aa0193e7696a7bc, type: 3}
-  compressClip: {fileID: 8300000, guid: 80499ae34b5f34b4fa6dee05b78b67fe, type: 3}
-  uncompessClip: {fileID: 8300000, guid: 7f4f3935aa7aefc468a128d4fd0fe2d9, type: 3}
+  compressClip: {fileID: 8300000, guid: 87257fc5171563941b99d727765862aa, type: 3}
+  uncompessClip: {fileID: 8300000, guid: 24f853023afdfc74584f01e5b5ef3c4c, type: 3}
   audioSource: {fileID: 1508441409}
 --- !u!114 &1508441411
 MonoBehaviour:
@@ -25070,7 +25133,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1769066752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26615,8 +26678,8 @@ MonoBehaviour:
   buttonImage: {fileID: 1883476196}
   defaultBT: {fileID: 21300000, guid: e85956f73296037469196471bb19de8d, type: 3}
   pressBT: {fileID: 21300000, guid: 0bdf19081edee6843aa0193e7696a7bc, type: 3}
-  compressClip: {fileID: 8300000, guid: 80499ae34b5f34b4fa6dee05b78b67fe, type: 3}
-  uncompessClip: {fileID: 8300000, guid: 7f4f3935aa7aefc468a128d4fd0fe2d9, type: 3}
+  compressClip: {fileID: 8300000, guid: 87257fc5171563941b99d727765862aa, type: 3}
+  uncompessClip: {fileID: 8300000, guid: 24f853023afdfc74584f01e5b5ef3c4c, type: 3}
   audioSource: {fileID: 1883476193}
 --- !u!114 &1883476195
 MonoBehaviour:
@@ -27810,8 +27873,8 @@ MonoBehaviour:
   buttonImage: {fileID: 1919907750}
   defaultBT: {fileID: 21300000, guid: d4c138c7c6258f247b530a4bcf4a26d6, type: 3}
   pressBT: {fileID: 21300000, guid: 503da560a4df9c14482224c7e5fcb261, type: 3}
-  compressClip: {fileID: 8300000, guid: 80499ae34b5f34b4fa6dee05b78b67fe, type: 3}
-  uncompessClip: {fileID: 8300000, guid: 7f4f3935aa7aefc468a128d4fd0fe2d9, type: 3}
+  compressClip: {fileID: 8300000, guid: 87257fc5171563941b99d727765862aa, type: 3}
+  uncompessClip: {fileID: 8300000, guid: 24f853023afdfc74584f01e5b5ef3c4c, type: 3}
   audioSource: {fileID: 1919907747}
 --- !u!114 &1919907749
 MonoBehaviour:
@@ -28404,8 +28467,8 @@ MonoBehaviour:
   buttonImage: {fileID: 1968406850}
   defaultBT: {fileID: 21300000, guid: 8e704180687a98040929ff8023146a55, type: 3}
   pressBT: {fileID: 21300000, guid: 090577c62d03f9c468268de680d83a20, type: 3}
-  compressClip: {fileID: 8300000, guid: 80499ae34b5f34b4fa6dee05b78b67fe, type: 3}
-  uncompessClip: {fileID: 8300000, guid: 7f4f3935aa7aefc468a128d4fd0fe2d9, type: 3}
+  compressClip: {fileID: 8300000, guid: 87257fc5171563941b99d727765862aa, type: 3}
+  uncompessClip: {fileID: 8300000, guid: 24f853023afdfc74584f01e5b5ef3c4c, type: 3}
   audioSource: {fileID: 1968406847}
 --- !u!114 &1968406849
 MonoBehaviour:
@@ -29449,8 +29512,8 @@ MonoBehaviour:
   buttonImage: {fileID: 2017567781}
   defaultBT: {fileID: 21300000, guid: 6256cfd6d9c60324f97dac9fb80f124c, type: 3}
   pressBT: {fileID: 21300000, guid: 48adf6bd0d4c29b4294d05dc8cdd2b84, type: 3}
-  compressClip: {fileID: 8300000, guid: 80499ae34b5f34b4fa6dee05b78b67fe, type: 3}
-  uncompessClip: {fileID: 8300000, guid: 7f4f3935aa7aefc468a128d4fd0fe2d9, type: 3}
+  compressClip: {fileID: 8300000, guid: 87257fc5171563941b99d727765862aa, type: 3}
+  uncompessClip: {fileID: 8300000, guid: 24f853023afdfc74584f01e5b5ef3c4c, type: 3}
   audioSource: {fileID: 2017567778}
 --- !u!114 &2017567780
 MonoBehaviour:

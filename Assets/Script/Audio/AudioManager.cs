@@ -124,6 +124,7 @@ public class AudioManager : MonoBehaviour
         }
         s.source.UnPause();
     }
+
     public void PlayBackgroundMusic(string name)
     {
         if (currentBackgroundMusic != null)

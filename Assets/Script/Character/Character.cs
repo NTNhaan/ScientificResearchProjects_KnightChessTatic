@@ -86,10 +86,33 @@ public abstract class Character : MonoBehaviour
         }
         else
         {
-            ChangeState(new HurtState());
+            // Không thay đổi state nếu đang trong trạng thái thiêu đốt
+            if (!(currentState is BurnState))
+            {
+                ChangeState(new HurtState());
+            }
         }
     }
-
+    public void ApplyBurnEffect()
+    {
+        if (!(currentState is BurnState))
+        {
+            ChangeState(new BurnState());
+        }
+    }
+    // public void ApplySpeedUpEffect()
+    // {
+    //     Debug.Log($"Applying speed up effect to {gameObject.name}");
+    //     // Chỉ áp dụng hiệu ứng tăng tốc nếu không đang trong trạng thái đó
+    //     if (!(currentState is SpeedUpState))
+    //     {
+    //         ChangeState(new SpeedUpState());
+    //     }
+    //     else
+    //     {
+    //         Debug.Log($"{gameObject.name} is already in speed up state");
+    //     }
+    // }
     public void RestoreHealth(float healAmount)
     {
         health += healAmount;

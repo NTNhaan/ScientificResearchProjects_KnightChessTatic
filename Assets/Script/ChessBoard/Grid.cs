@@ -59,6 +59,9 @@ public class Grid : MonoBehaviour
 
     private bool hasEnemySwapped = false;
 
+    // Thêm event để thông báo khi board đã fill xong
+    public static event Action OnBoardFilled;  // observer để theo dõi sự kiện
+
     public void Awake()
     {
         role = TimeBar.Role.Player;
@@ -113,9 +116,23 @@ public class Grid : MonoBehaviour
                 }
             }
         }
-        StartCoroutine(CheckAndFill());
+        StartCoroutine(InitialFill());
         AudioManager.Instance.PlayBackgroundMusic("PuzzleSound");
     }
+
+    private IEnumerator InitialFill()
+    {
+        isFilling = true;
+        yield return StartCoroutine(Fill());
+        isFilling = false;
+
+        // Thông báo cho tất cả các observer khi board đã fill xong
+        OnBoardFilled?.Invoke();
+
+        // Bắt đầu coroutine kiểm tra fill thông thường
+        StartCoroutine(CheckAndFill());
+    }
+
     private IEnumerator CheckAndFill()
     {
         while (true) // Thay vì dùng timeout, chúng ta sẽ chạy liên tục

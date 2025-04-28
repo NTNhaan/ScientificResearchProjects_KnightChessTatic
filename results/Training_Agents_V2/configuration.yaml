@@ -1,11 +1,12 @@
+default_settings: null
 behaviors:
-  Match3:
+  MatchThree:
     trainer_type: ppo
     hyperparameters:
-      batch_size: 1024
-      buffer_size: 10240
+      batch_size: 64
+      buffer_size: 12000
       learning_rate: 0.0003
-      beta: 0.005
+      beta: 0.01
       epsilon: 0.2
       lambd: 0.95
       num_epoch: 3
@@ -14,8 +15,8 @@ behaviors:
       beta_schedule: linear
       epsilon_schedule: linear
     network_settings:
-      normalize: false
-      hidden_units: 128
+      normalize: true
+      hidden_units: 256
       num_layers: 2
       vis_encode_type: simple
       memory: null
@@ -36,9 +37,9 @@ behaviors:
     init_path: null
     keep_checkpoints: 5
     checkpoint_interval: 500000
-    max_steps: 500000
+    max_steps: 2000000
     time_horizon: 64
-    summary_freq: 50000
+    summary_freq: 12000
     threaded: false
     self_play: null
     behavioral_cloning: null
@@ -62,12 +63,12 @@ engine_settings:
   no_graphics: false
 environment_parameters: null
 checkpoint_settings:
-  run_id: Match3_Training
+  run_id: Training_Agents_V2
   initialize_from: null
   load_model: false
   resume: false
-  force: false
-  train_model: true
+  force: true
+  train_model: false
   inference: false
   results_dir: results
 torch_settings:

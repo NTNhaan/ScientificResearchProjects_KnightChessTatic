@@ -15,11 +15,17 @@ public class TimeBar : MonoBehaviour
     public Slider TimeSliderDemon;
     public Slider TimeSliderHero;
     public float MaxTime = 100;
+    public float timeScale = 1f;   // tg cho speedupState
+    public float baseSpeed = 1f;
+    public float currentSpeed;
     public Role role;
     public Animator animator;
     private bool isPaused = false;
     private bool hasPlayedWarning = false;
     private const float WARNING_THRESHOLD = 30f;
+    private bool isGameStarted = false;
+    public float maxTimeScale = 3f; // Giới hạn tốc độ tối đa
+    public float minTimeScale = 0.5f;
     public void Awake()
     {
         if (Instance == null)
@@ -33,10 +39,26 @@ public class TimeBar : MonoBehaviour
         TimeSliderHero.value = MaxTime;
         TimeSliderDemon.value = MaxTime;
     }
+
     public void Start()
     {
+        currentSpeed = baseSpeed;
         role = Role.Player;
+        // Đăng ký lắng nghe sự kiện board đã fill xong
+        Grid.OnBoardFilled += StartGame;
     }
+
+    private void OnDestroy()
+    {
+        // Hủy đăng ký sự kiện khi object bị destroy
+        Grid.OnBoardFilled -= StartGame;
+    }
+
+    private void StartGame()
+    {
+        isGameStarted = true;
+    }
+
     public void SwapRole()
     {
         if (role == Role.Player)
@@ -54,17 +76,24 @@ public class TimeBar : MonoBehaviour
             hasPlayedWarning = false;
         }
     }
+
     public void ResetAnimation()
     {
         animator.ResetTrigger("StartTurn");
         animator.ResetTrigger("StartTurnBack");
     }
+
     public void PlayAnimation(string nametrigger)
     {
         animator.SetTrigger(nametrigger);
     }
+
     public void Update()
     {
+        currentSpeed = baseSpeed * timeScale;
+        // Chỉ cập nhật thời gian khi game đã bắt đầu
+        if (!isGameStarted) return;
+
         bool SwapOnBoard = SwapTurn.Instance.IsSwapping;
         if (role == Role.Player && !isPaused)
         {
@@ -72,7 +101,7 @@ public class TimeBar : MonoBehaviour
 
             // Kiểm tra và phát âm thanh cảnh báo
             if (TimeSliderHero.value <= WARNING_THRESHOLD && !hasPlayedWarning)
-            {// nếu slider dưới 30s thì bật timeleftstate
+            {
                 AudioManager.Instance.ChangeState(new TimeLeftState());
                 hasPlayedWarning = true;
             }
@@ -105,9 +134,22 @@ public class TimeBar : MonoBehaviour
             }
         }
     }
+    public void SetTimeScale(float newScale)
+    {
+        timeScale = Mathf.Clamp(newScale, 0.5f, 3f); // Giới hạn tốc độ từ 0.5x đến 3x
+        currentSpeed = baseSpeed * timeScale;
+        Debug.Log($"Time scale set to: {timeScale}");
+    }
+
+    public void ResetTimeScale()
+    {
+        timeScale = 1f;
+        currentSpeed = baseSpeed;
+        Debug.Log("Time scale reset to normal");
+    }
     public void Pause()
     {
-        isPaused = true;  // Pause the time bar when the player is swapping
-        SwapTurn.Instance.StartSwap();  // Pauses to prevent players from swapping while the animation is running
+        isPaused = true;
+        SwapTurn.Instance.StartSwap();
     }
 }

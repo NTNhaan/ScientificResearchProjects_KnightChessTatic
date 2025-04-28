@@ -1,3 +1,4 @@
+default_settings: null
 behaviors:
   Match3:
     trainer_type: ppo
@@ -62,12 +63,12 @@ engine_settings:
   no_graphics: false
 environment_parameters: null
 checkpoint_settings:
-  run_id: Match3_Training
+  run_id: Training_Agents_V3
   initialize_from: null
   load_model: false
   resume: false
   force: false
-  train_model: true
+  train_model: false
   inference: false
   results_dir: results
 torch_settings:

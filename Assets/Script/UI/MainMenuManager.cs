@@ -5,6 +5,10 @@ using UnityEngine.SceneManagement;
 public class MainMenuManager : MonoBehaviour
 {
     public GameObject PlayMenu, LobbyGame, LevelMenu, CreateMenu;
+    public void Start()
+    {
+        AudioManager.Instance.PlayBackgroundMusic("MenuSound");
+    }
     public void OnClickPlay()
     {
         PlayMenu.SetActive(true);
@@ -19,7 +23,7 @@ public class MainMenuManager : MonoBehaviour
     }
     public void OnClickBot()
     {
-        //SceneManager.LoadScene("Gameplay");
+        SceneManager.LoadScene("MainScene");
     }
     public void OnClickCreateRoom()
     {

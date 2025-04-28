@@ -103,7 +103,30 @@ public class GameManager : MonoBehaviour
                 {
                     enemy.RestoreHealth(enemy.maxHealth);
                 }
-            } }
+            } },
+            {ItemPieces.ItemType.AppleGreen, (GamePieces piece) => {
+                if(timeswap.role == TimeBar.Role.Player)
+                {
+                    enemy.ApplyBurnEffect();
+                }
+                else
+                {
+                    player.ApplyBurnEffect();
+                }
+            } },
+            // {ItemPieces.ItemType.Beer, (GamePieces piece) => {
+            //     Debug.Log("Beer item activated");
+            //     if(timeswap.role == TimeBar.Role.Player)
+            //     {
+            //         Debug.Log("Applying speed up to enemy");
+            //         enemy.ApplySpeedUpEffect();
+            //     }
+            //     else
+            //     {
+            //         Debug.Log("Applying speed up to player");
+            //         player.ApplySpeedUpEffect();
+            //     }
+            // } }
         };
     }
 
@@ -133,6 +156,14 @@ public class GameManager : MonoBehaviour
                 // Handle AppleGreen behavior
                 break;
             case ItemPieces.ItemType.Beer:
+                // if (timeswap.role == TimeBar.Role.Player)
+                // {
+                //     enemy.ApplySpeedUpEffect();
+                // }
+                // else
+                // {
+                //     player.ApplySpeedUpEffect();
+                // }
                 // Handle Beer behavior
                 break;
             case ItemPieces.ItemType.Sword:

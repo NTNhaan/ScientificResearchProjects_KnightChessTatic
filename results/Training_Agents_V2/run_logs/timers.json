@@ -1,0 +1,42 @@
+{
+    "name": "root",
+    "metadata": {
+        "timer_format_version": "0.1.0",
+        "start_time_seconds": "1745788405",
+        "python_version": "3.9.13 (tags/v3.9.13:6de2ca5, May 17 2022, 16:36:42) [MSC v.1929 64 bit (AMD64)]",
+        "command_line_arguments": "C:\\Users\\Nhan\\Documents\\Project\\gametest\\Childhoods\\venv\\Scripts\\mlagents-learn config/match3_config.yaml --run-id=Training_Agents_V2 --force",
+        "mlagents_version": "0.30.0",
+        "mlagents_envs_version": "0.30.0",
+        "communication_protocol_version": "1.5.0",
+        "pytorch_version": "2.5.1+cpu",
+        "numpy_version": "1.21.2",
+        "end_time_seconds": "1745788416"
+    },
+    "total": 10.3493807,
+    "count": 1,
+    "self": 0.007019400000000786,
+    "children": {
+        "run_training.setup": {
+            "total": 0.10122849999999994,
+            "count": 1,
+            "self": 0.10122849999999994
+        },
+        "TrainerController.start_learning": {
+            "total": 10.241132799999999,
+            "count": 1,
+            "self": 9.279999999911581e-05,
+            "children": {
+                "TrainerController._reset_env": {
+                    "total": 10.241027899999999,
+                    "count": 1,
+                    "self": 10.241027899999999
+                },
+                "TrainerController._save_models": {
+                    "total": 1.2100000001069589e-05,
+                    "count": 1,
+                    "self": 1.2100000001069589e-05
+                }
+            }
+        }
+    }
+}
