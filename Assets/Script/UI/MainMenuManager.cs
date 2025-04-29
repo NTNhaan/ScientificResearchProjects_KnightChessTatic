@@ -23,7 +23,8 @@ public class MainMenuManager : MonoBehaviour
     }
     public void OnClickBot()
     {
-        SceneManager.LoadScene("MainScene");
+        LoadingManager.NEXT_SCENE = "MainScene";
+        SceneManager.LoadScene("LoadingScene");
     }
     public void OnClickCreateRoom()
     {
