@@ -2,22 +2,22 @@
     "Match3": {
         "checkpoints": [
             {
-                "steps": 5120,
-                "file_path": "results\\Training_Agents_V6\\Match3\\Match3-5120.onnx",
+                "steps": 4480,
+                "file_path": "results\\Training_Agents_V6\\Match3\\Match3-4480.onnx",
                 "reward": null,
-                "creation_time": 1745793035.0717912,
+                "creation_time": 1746210303.592786,
                 "auxillary_file_paths": [
-                    "results\\Training_Agents_V6\\Match3\\Match3-5120.pt"
+                    "results\\Training_Agents_V6\\Match3\\Match3-4480.pt"
                 ]
             }
         ],
         "final_checkpoint": {
-            "steps": 5120,
+            "steps": 4480,
             "file_path": "results\\Training_Agents_V6\\Match3.onnx",
             "reward": null,
-            "creation_time": 1745793035.0717912,
+            "creation_time": 1746210303.592786,
             "auxillary_file_paths": [
-                "results\\Training_Agents_V6\\Match3\\Match3-5120.pt"
+                "results\\Training_Agents_V6\\Match3\\Match3-4480.pt"
             ]
         }
     },

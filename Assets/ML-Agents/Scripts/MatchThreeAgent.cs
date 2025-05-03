@@ -27,14 +27,14 @@ public class MatchThreeAgent : Agent
 
     [Header("Training Optimizations")]
     [SerializeField] private bool isTrainingMode = false;
-    [SerializeField] private float trainingMoveInterval = 0.05f;
-    [SerializeField] private float normalMoveInterval = 1f;
+    [SerializeField] private float trainingMoveInterval = 0.5f;
+    [SerializeField] private float normalMoveInterval = 1.5f;
 
     private bool isWaitingForMove = false;
     private float previousEnemyHealth;
     private float previousPlayerHealth;
     private float autoPlayTimer = 0f;
-    private const float AUTO_PLAY_INTERVAL = 1f;
+    private const float AUTO_PLAY_INTERVAL = 1.5f;
 
     // Training statistics
     private float totalReward = 0f;
@@ -70,13 +70,16 @@ public class MatchThreeAgent : Agent
     private int currentEpisode = 0;
 
     // Cache WaitForSeconds để tránh tạo mới mỗi lần
-    private static readonly WaitForSeconds WaitTime = new WaitForSeconds(0.05f);
+    private static readonly WaitForSeconds WaitTime = new WaitForSeconds(0.5f);
     private static readonly WaitForSeconds AutoPlayWait = new WaitForSeconds(AUTO_PLAY_INTERVAL);
 
     // Add new variables for enemy AI control
     private bool isEnemyTurn = false;
     private bool hasEnemySwapped = false;
     private bool isEnemyThinking = false;
+
+    // Add StatsRecorder field
+    private StatsRecorder statsRecorder;
 
     public override void Initialize()
     {
@@ -104,6 +107,24 @@ public class MatchThreeAgent : Agent
 
         // Set training optimizations
         SetTrainingOptimizations();
+
+        // Initialize StatsRecorder
+        try
+        {
+            if (Academy.Instance != null)
+            {
+                statsRecorder = Academy.Instance.StatsRecorder;
+                Debug.Log("StatsRecorder initialized successfully");
+            }
+            else
+            {
+                Debug.LogError("Academy.Instance is null. Make sure Academy is properly set up in the scene.");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Failed to initialize StatsRecorder: {e.Message}");
+        }
 
         // Debug.Log($"Grid dimensions: {gameGrid.xDim}x{gameGrid.yDim}");
         // Debug.Log($"Observation Size: {observationSize}");
@@ -161,13 +182,13 @@ public class MatchThreeAgent : Agent
         isEnemyThinking = true;
 
         // Add a small delay for more natural feel
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f);
 
         // Request decision from the trained model
         RequestDecision();
 
         // Wait for the decision to be made
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.5f);
 
         isEnemyThinking = false;
     }
@@ -175,38 +196,15 @@ public class MatchThreeAgent : Agent
     public override void OnEpisodeBegin()
     {
         currentEpisode++;
+        episodeCount++;
 
-        // Log detailed metrics every LOG_INTERVAL episodes
-        if (enableEpisodeLog && currentEpisode > 1 && currentEpisode % LOG_INTERVAL == 0)
+        // Log metrics to Tensorboard at the end of each episode
+        if (currentEpisode > 1)
         {
-            float moveSuccessRate = totalMoves > 0 ? (float)successfulMoves / totalMoves * 100 : 0;
-            float validMoveRate = (validMovesCount + invalidMovesCount) > 0 ?
-                (float)validMovesCount / (validMovesCount + invalidMovesCount) * 100 : 0;
-            float recentAverageReward = episodeRewards.Count > 0 ? episodeRewards.Average() : 0;
-            float recentAverageDamage = episodeRewards.Count > 0 ? averageDamagePerMove : 0;
-
-            BufferedLog($"[Training] Episode {currentEpisode} Summary:\n" +
-                       $"Total Reward: {episodeReward:F2}\n" +
-                       $"Move Success Rate: {moveSuccessRate:F2}%\n" +
-                       $"Valid Move Rate: {validMoveRate:F2}%\n" +
-                       $"Matches Per Move: {averageMatchesPerMove:F2}\n" +
-                       $"Average Damage: {recentAverageDamage:F2}\n" +
-                       $"Recent Average Reward: {recentAverageReward:F2}\n" +
-                       $"Best Episode Reward: {bestEpisodeReward:F2}");
-
-            // Update best reward
-            if (episodeReward > bestEpisodeReward)
-            {
-                bestEpisodeReward = episodeReward;
-                BufferedLog($"[Training] New Best Episode Reward: {bestEpisodeReward:F2}!");
-            }
-
-            // Add to recent rewards
-            episodeRewards.Enqueue(episodeReward);
-            if (episodeRewards.Count > 100) episodeRewards.Dequeue();
+            LogMetricsToTensorboard();
         }
 
-        // Reset metrics for new episode
+        // Reset episode metrics
         episodeReward = 0;
         successfulMoves = 0;
         totalMoves = 0;
@@ -218,7 +216,6 @@ public class MatchThreeAgent : Agent
             enemyCharacter.health = enemyCharacter.maxHealth;
             playerCharacter.health = playerCharacter.maxHealth;
             previousEnemyHealth = enemyCharacter.health;
-            previousPlayerHealth = playerCharacter.health;
         }
 
         isWaitingForMove = false;
@@ -447,12 +444,13 @@ public class MatchThreeAgent : Agent
         List<GamePieces> initialMatches = gameGrid.FindMatches();
         bool hadInitialMatches = initialMatches != null && initialMatches.Count > 0;
 
-        // Perform swap
+        // Perform swap with animation
         gameGrid.SwapPiece(sourcePiece, targetPiece);
+        yield return new WaitForSeconds(0.3f);
 
         float timeout = 0f;
-        float maxTimeout = isTrainingMode ? 1f : 2f;
-        float checkInterval = isTrainingMode ? 0.02f : 0.05f;
+        float maxTimeout = isTrainingMode ? 2f : 3f;
+        float checkInterval = isTrainingMode ? 0.1f : 0.2f;
 
         while (gameGrid.isFilling && timeout < maxTimeout)
         {
@@ -499,6 +497,9 @@ public class MatchThreeAgent : Agent
             AddReward(matchReward);
             episodeReward += matchReward;
             totalReward += matchReward;
+
+            // Log match metrics
+            statsRecorder.Add("matches_per_episode", finalMatches.Count);
         }
         else if (!hadInitialMatches)
         {
@@ -517,17 +518,23 @@ public class MatchThreeAgent : Agent
         if (enemyHealthDelta > 0)
         {
             averageDamagePerMove = (averageDamagePerMove * totalMoves + enemyHealthDelta) / (totalMoves + 1);
-            AddReward(1.5f * enemyHealthDelta / enemyCharacter.maxHealth);
+            float damageReward = 1.5f * enemyHealthDelta / enemyCharacter.maxHealth;
+            AddReward(damageReward);
+            statsRecorder.Add("enemy_damage_dealt", enemyHealthDelta);
         }
 
         if (playerHealthDelta > 0)
         {
-            AddReward(-0.5f * playerHealthDelta / playerCharacter.maxHealth);
+            float damagePenalty = -0.5f * playerHealthDelta / playerCharacter.maxHealth;
+            AddReward(damagePenalty);
+            statsRecorder.Add("player_damage_taken", playerHealthDelta);
         }
 
         if (enemyHealthDelta < 0)
         {
-            AddReward(0.8f * -enemyHealthDelta / enemyCharacter.maxHealth);
+            float healReward = 0.8f * -enemyHealthDelta / enemyCharacter.maxHealth;
+            AddReward(healReward);
+            statsRecorder.Add("enemy_healed", -enemyHealthDelta);
         }
 
         CheckGameEnd();
@@ -775,6 +782,39 @@ public class MatchThreeAgent : Agent
             if (scoreText != null) scoreText.gameObject.SetActive(false);
             if (episodeText != null) episodeText.gameObject.SetActive(false);
             if (averageRewardText != null) averageRewardText.gameObject.SetActive(false);
+        }
+    }
+
+    // Modify LogMetricsToTensorboard method
+    private void LogMetricsToTensorboard()
+    {
+        if (statsRecorder == null)
+        {
+            Debug.LogWarning("StatsRecorder is not initialized. Cannot log metrics to Tensorboard.");
+            return;
+        }
+
+        try
+        {
+            // Log episode metrics
+            statsRecorder.Add("episode_reward", episodeReward);
+            statsRecorder.Add("episode_length", totalMoves);
+            statsRecorder.Add("cumulative_reward", totalReward);
+
+            // Log custom metrics
+            if (totalMoves > 0)
+            {
+                float moveSuccessRate = (float)successfulMoves / totalMoves * 100;
+                float matchesPerMove = (float)totalMatches / totalMoves;
+
+                statsRecorder.Add("move_success_rate", moveSuccessRate);
+                statsRecorder.Add("matches_per_move", matchesPerMove);
+                statsRecorder.Add("average_damage_per_move", averageDamagePerMove);
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Failed to log metrics to Tensorboard: {e.Message}");
         }
     }
 }
