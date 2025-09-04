@@ -351,27 +351,27 @@ public class Grid : MonoBehaviour
 
         AudioManager.Instance.ChangeState(new SwitchPieceState());
         // Add safety checks for timeswap
-        if (timeswap != null)
-        {
-            try
-            {
-                if (timeswap.role == TimeBar.Role.Player)
-                {
-                    timeswap.Pause();
-                    timeswap.PlayAnimation("StartTurn");
-                }
-                else if (timeswap.role == TimeBar.Role.Demon)
-                {
-                    timeswap.Pause();
-                    timeswap.PlayAnimation("StartTurnBack");
-                    hasEnemySwapped = true;
-                }
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Error during timeswap animation: {e.Message}");
-            }
-        }
+        // if (timeswap != null)
+        // {
+        //     try
+        //     {
+        //         if (timeswap.role == TimeBar.Role.Player)
+        //         {
+        //             timeswap.Pause();
+        //             timeswap.PlayAnimation("StartTurn");
+        //         }
+        //         else if (timeswap.role == TimeBar.Role.Demon)
+        //         {
+        //             timeswap.Pause();
+        //             timeswap.PlayAnimation("StartTurnBack");
+        //             hasEnemySwapped = true;
+        //         }
+        //     }
+        //     catch (System.Exception e)
+        //     {
+        //         Debug.LogError($"Error during timeswap animation: {e.Message}");
+        //     }
+        // }
 
         ClearAllValidMatches();
         StartCoroutine(Fill());

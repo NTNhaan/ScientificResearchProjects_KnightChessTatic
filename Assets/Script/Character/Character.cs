@@ -29,6 +29,7 @@ public abstract class Character : MonoBehaviour
 
     public void Update()
     {
+
         if (currentState != null)
         {
             currentState.Update(this);

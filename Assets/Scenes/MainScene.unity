@@ -47869,7 +47869,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1192997995}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 315af481a1945954c91f8206d5f4d8d9, type: 3}
   m_Name: 
@@ -47880,7 +47880,7 @@ MonoBehaviour:
   timeScale: 1
   baseSpeed: 1
   currentSpeed: 0
-  role: 0
+  role: 1
   animator: {fileID: 1407492779}
   maxTimeScale: 3
   minTimeScale: 0.5
@@ -58103,7 +58103,7 @@ MonoBehaviour:
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
     hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 5022602860645237092, guid: e05265039969f06498fa72f5e72876f4, type: 3}
+  m_Model: {fileID: 0}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: Match3
@@ -58167,7 +58167,7 @@ MonoBehaviour:
   averageRewardText: {fileID: 0}
   observationSize: 66
   branchSizes: 08000000080000000800000008000000
-  isTrainingMode: 0
+  isTrainingMode: 1
   trainingMoveInterval: 0.05
   normalMoveInterval: 1
 --- !u!114 &2054068691
@@ -58185,7 +58185,7 @@ MonoBehaviour:
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  MaxStep: 0
+  MaxStep: 1000
 --- !u!1 &2062918728
 GameObject:
   m_ObjectHideFlags: 0
